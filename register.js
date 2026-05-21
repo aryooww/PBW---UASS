@@ -1,19 +1,12 @@
-// ============================================
-// REGISTER.JS - FILE UTAMA UNTUK LOGIN & REGISTRASI
-// ============================================
-
-// ============================================
-// 1. DATA DUMMY (Simulasi database pengguna)
-// ============================================
 // Data dummy untuk simulasi login (bisa diganti dengan API call ke backend)
 const dummyUsers = [
     {
-        id: 1,                          // ID unik pengguna
-        username: "reseller1",          // Nama pengguna untuk login
-        phone: "08123456789",           // Nomor handphone untuk login
-        email: "reseller@example.com",  // Email untuk login
-        password: "123456",             // Password (seharusnya di-hash)
-        name: "Reseller Handal"         // Nama lengkap pengguna
+        id: 1,                          
+        username: "reseller1",          
+        phone: "08123456789",           
+        email: "reseller@example.com",  
+        password: "123456",             
+        name: "Reseller Handal"      
     },
     {
         id: 2,
@@ -25,9 +18,6 @@ const dummyUsers = [
     }
 ];
 
-// ============================================
-// 2. FUNGSI MANAJEMEN SESSION (localStorage)
-// ============================================
 
 // Fungsi untuk menyimpan session/login state ke localStorage
 // Tujuan: Agar user tetap login meskipun refresh halaman
@@ -41,9 +31,6 @@ function setLoggedIn(userData) {
     }));
 }
 
-// ============================================
-// 3. FUNGSI NAVIGASI / REDIRECT
-// ============================================
 
 // Fungsi redirect ke halaman dashboard
 // Dipanggil setelah login berhasil
@@ -51,9 +38,8 @@ function redirectToDashboard() {
     window.location.href = 'dashboard.html';
 }
 
-// ============================================
-// 4. FUNGSI CEK AUTENTIKASI
-// ============================================
+
+// FUNGSI CEK AUTENTIKASI
 
 // Cek apakah user sudah login atau belum
 // Dipanggil saat halaman login/dashboard dimuat
@@ -72,9 +58,8 @@ function checkAuth() {
     }
 }
 
-// ============================================
-// 5. FUNGSI VALIDASI INPUT
-// ============================================
+
+// FUNGSI VALIDASI INPUT
 
 // Validasi format email menggunakan regex
 // Contoh valid: user@example.com | Invalid: user@.com
@@ -88,10 +73,8 @@ function isValidPhone(phone) {
     return phone.length >= 10 && phone.length <= 13 && /^\d+$/.test(phone);
 }
 
-// ============================================
-// 6. FUNGSI LOGIN
-// ============================================
 
+// 6. FUNGSI LOGIN
 // Proses login: mencari user berdasarkan username/email/no HP
 // Memeriksa kecocokan password
 function login(username, password) {
