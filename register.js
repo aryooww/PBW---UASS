@@ -1,6 +1,5 @@
-// register.js - Login & Registrasi dengan redirect ke dashboard
+// register.js - Registrasi kembali ke halaman login
 
-// Data dummy untuk simulasi login (bisa diganti dengan API call)
 const dummyUsers = [
     {
         id: 1,
@@ -20,7 +19,6 @@ const dummyUsers = [
     }
 ];
 
-// Fungsi untuk menyimpan session/login state
 function setLoggedIn(userData) {
     localStorage.setItem('isLoggedIn', 'true');
     localStorage.setItem('userData', JSON.stringify({
@@ -31,22 +29,33 @@ function setLoggedIn(userData) {
     }));
 }
 
-// Fungsi redirect ke dashboard
 function redirectToDashboard() {
     window.location.href = 'dashboard.html';
 }
 
-// Cek apakah user sudah login (untuk halaman lain)
 function checkAuth() {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
-    if (isLoggedIn === 'true' && window.location.pathname.includes('login.html')) {
+    const currentPage = window.location.pathname;
+    
+    if (isLoggedIn === 'true' && currentPage.includes('Tampilanlogin.html')) {
         redirectToDashboard();
+    }
+    
+    if (isLoggedIn !== 'true' && currentPage.includes('dashboard.html')) {
+        window.location.href = 'Tampilanlogin.html';
     }
 }
 
-// Fungsi login
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+function isValidPhone(phone) {
+    return phone.length >= 10 && phone.length <= 13 && /^\d+$/.test(phone);
+}
+
 function login(username, password) {
-    // Cari user berdasarkan username/email/phone
     const user = dummyUsers.find(u => 
         u.username === username || 
         u.email === username || 
@@ -55,14 +64,23 @@ function login(username, password) {
     
     if (user && user.password === password) {
         setLoggedIn(user);
-        return { success: true, message: "Login berhasil!" };
+        return { success: true, message: "Login berhasil! Mengarahkan ke dashboard..." };
     } else {
         return { success: false, message: "Username/Email/No HP atau password salah!" };
     }
 }
 
-// Fungsi registrasi
 function register(userData) {
+    // Validasi email
+    if (!isValidEmail(userData.email)) {
+        return { success: false, message: "Format email tidak valid!" };
+    }
+    
+    // Validasi nomor HP
+    if (!isValidPhone(userData.phone)) {
+        return { success: false, message: "Nomor HP harus 10-13 digit angka!" };
+    }
+    
     // Cek apakah user sudah ada
     const existingUser = dummyUsers.find(u => 
         u.email === userData.email || 
@@ -81,7 +99,7 @@ function register(userData) {
         return { success: false, message: "Password minimal 6 karakter!" };
     }
     
-    // Simulasi registrasi berhasil (di dunia nyata kirim ke backend)
+    // Simulasi registrasi berhasil (TANPA LANGSUNG LOGIN)
     const newUser = {
         id: dummyUsers.length + 1,
         username: userData.phone,
@@ -91,17 +109,14 @@ function register(userData) {
         name: userData.name
     };
     dummyUsers.push(newUser);
-    setLoggedIn(newUser);
     
-    return { success: true, message: "Registrasi berhasil!" };
+    // ✅ Kembali ke halaman login, bukan langsung ke dashboard
+    return { success: true, message: "Registrasi berhasil! Silakan login.", redirectToLogin: true };
 }
 
-// Event Listener saat halaman load
 document.addEventListener('DOMContentLoaded', function() {
-    // Cek apakah sudah login
     checkAuth();
     
-    // DOM Elements
     const loginCard = document.getElementById('loginCard');
     const registerCard = document.getElementById('registerCard');
     const loginBtn = document.getElementById('loginBtn');
@@ -114,7 +129,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const loginAlert = document.getElementById('loginAlert');
     const regAlert = document.getElementById('regAlert');
     
-    // Input fields
     const loginUsername = document.getElementById('loginUsername');
     const loginPassword = document.getElementById('loginPassword');
     const regName = document.getElementById('regName');
@@ -123,7 +137,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const regPassword = document.getElementById('regPassword');
     const regConfirm = document.getElementById('regConfirm');
     
-    // Show alert helper
     function showAlert(alertElement, message, isError = true) {
         alertElement.textContent = message;
         alertElement.classList.remove('d-none', 'alert-success', 'alert-danger');
@@ -133,7 +146,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 3000);
     }
     
-    // Login handler
     function handleLogin(e) {
         e.preventDefault();
         const username = loginUsername.value.trim();
@@ -156,7 +168,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Register handler
     function handleRegister(e) {
         e.preventDefault();
         const name = regName.value.trim();
@@ -180,19 +191,25 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (result.success) {
             showAlert(regAlert, result.message, false);
+            
+            // ✅ Kembali ke form login setelah registrasi berhasil
             setTimeout(() => {
-                redirectToDashboard();
-            }, 1000);
+                showLogin();
+                // Kosongkan form registrasi
+                regName.value = '';
+                regPhone.value = '';
+                regEmail.value = '';
+                regPassword.value = '';
+                regConfirm.value = '';
+            }, 1500);
         } else {
             showAlert(regAlert, result.message, true);
         }
     }
     
-    // Toggle between login and register forms
     function showLogin() {
         loginCard.classList.remove('d-none');
         registerCard.classList.add('d-none');
-        // Clear alerts
         loginAlert.classList.add('d-none');
         regAlert.classList.add('d-none');
     }
@@ -204,30 +221,30 @@ document.addEventListener('DOMContentLoaded', function() {
         regAlert.classList.add('d-none');
     }
     
-    // Forgot password handler
     function handleForgot() {
-        alert('Fitur reset password akan segera hadir! Silakan hubungi admin Groceer.');
+        alert('Fitur reset password akan segera hadir! Silakan hubungi admin Groceer di WhatsApp: 0812-3456-7890');
     }
     
-    // Help handler
     function handleHelp() {
         alert('Butuh bantuan? Hubungi CS Groceer di WhatsApp: 0812-3456-7890');
     }
     
-    // Event listeners
-    loginBtn.addEventListener('click', handleLogin);
-    registerBtn.addEventListener('click', handleRegister);
-    showRegisterLink.addEventListener('click', showRegister);
-    showLoginLink.addEventListener('click', showLogin);
-    forgotBtn.addEventListener('click', handleForgot);
-    helpBtnLogin.addEventListener('click', handleHelp);
-    helpBtnRegister.addEventListener('click', handleHelp);
+    if (loginBtn) loginBtn.addEventListener('click', handleLogin);
+    if (registerBtn) registerBtn.addEventListener('click', handleRegister);
+    if (showRegisterLink) showRegisterLink.addEventListener('click', showRegister);
+    if (showLoginLink) showLoginLink.addEventListener('click', showLogin);
+    if (forgotBtn) forgotBtn.addEventListener('click', handleForgot);
+    if (helpBtnLogin) helpBtnLogin.addEventListener('click', handleHelp);
+    if (helpBtnRegister) helpBtnRegister.addEventListener('click', handleHelp);
     
-    // Enter key submission
-    loginPassword.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') handleLogin(e);
-    });
-    regConfirm.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') handleRegister(e);
-    });
+    if (loginPassword) {
+        loginPassword.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') handleLogin(e);
+        });
+    }
+    if (regConfirm) {
+        regConfirm.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') handleRegister(e);
+        });
+    }
 });
