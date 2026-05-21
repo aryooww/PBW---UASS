@@ -2,22 +2,21 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Groceer - Dashboard Grosir Hemat (Bootstrap)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Groceer - Dashboard Grosir Hemat</title>
     <!-- Bootstrap 5 CSS + Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <style>
         * {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         body {
             background-color: #f8fafc;
         }
-        /* kustom badge, card hover */
+        .navbar-groceer {
+            background: linear-gradient(135deg, #1e7b48, #146c43);
+        }
         .card {
             transition: transform 0.2s ease, box-shadow 0.2s ease;
             border: none;
@@ -39,10 +38,6 @@
             background-color: #198754;
             color: white;
             border-color: #198754;
-        }
-        .btn-cat-active:hover {
-            background-color: #146c43;
-            color: white;
         }
         .hero-grocer {
             background: linear-gradient(105deg, #1a3c2c 0%, #2b8c4a 100%);
@@ -79,9 +74,13 @@
             border-radius: 20px;
             padding: 4px 10px;
         }
-        footer {
-            font-size: 0.8rem;
-            border-top: 1px solid #e2e8f0;
+        .logout-btn {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .logout-btn:hover {
+            background-color: rgba(255,255,255,0.2);
+            border-radius: 8px;
         }
         @media (max-width: 768px) {
             .hero-text h2 {
@@ -96,24 +95,31 @@
 </head>
 <body>
 
-<div class="container py-4">
-    <!-- Header: Groceer + Cart -->
-    <div class="d-flex flex-wrap justify-content-between align-items-center border-bottom pb-3 mb-3">
-        <div>
-            <h1 class="display-6 fw-bold" style="color: #1e7b48;">Groceer</h1>
-            <p class="text-secondary-emphasis small"><i class="bi bi-basket2"></i> Cart produk grosir masih <span class="fw-semibold text-success">penuh hemat!</span></p>
+<!-- Navbar dengan user info -->
+<nav class="navbar navbar-groceer text-white px-3 px-md-4 py-3 shadow">
+    <div class="container-fluid">
+        <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-basket3 fs-3"></i>
+            <span class="fw-bold fs-4">Groceer</span>
+            <span class="badge bg-warning text-dark ms-2">Grosir</span>
         </div>
-        <div class="bg-white px-4 py-2 rounded-pill shadow-sm border">
-            <i class="bi bi-cart-check-fill text-success me-2"></i>
-            <span class="fw-semibold">Keranjang Grosir</span>
-            <span class="badge bg-success rounded-pill ms-2">3 item</span>
+        <div class="d-flex align-items-center gap-3">
+            <div class="text-end">
+                <small class="d-block opacity-75">Halo,</small>
+                <span class="fw-semibold" id="userNameDisplay">Reseller</span>
+            </div>
+            <div class="logout-btn p-2" id="logoutBtn" title="Logout">
+                <i class="bi bi-box-arrow-right fs-5"></i>
+            </div>
         </div>
     </div>
+</nav>
 
-    <!-- Kategori (Semua | Snack | Pakaian | Kebutuhan Pokok | Makanan | Minuman | Kebersihan) -->
+<div class="container py-4">
+    <!-- Kategori -->
     <div class="overflow-auto mb-4 pb-1">
         <div class="d-flex gap-2 flex-nowrap">
-            <button class="btn btn-outline-success btn-cat active fw-semibold" style="background:#198754; color:white; border-color:#198754;">Semua</button>
+            <button class="btn btn-success btn-cat active">Semua</button>
             <button class="btn btn-outline-secondary btn-cat">Snack</button>
             <button class="btn btn-outline-secondary btn-cat">Pakaian</button>
             <button class="btn btn-outline-secondary btn-cat">Kebutuhan Pokok</button>
@@ -123,7 +129,7 @@
         </div>
     </div>
 
-    <!-- Banner utama: Belanja Grosir Lebih Hemat! -->
+    <!-- Banner utama -->
     <div class="hero-grocer text-white p-4 p-md-5 rounded-4 mb-4 shadow">
         <div class="row align-items-center">
             <div class="col-md-8">
@@ -141,7 +147,7 @@
         </div>
     </div>
 
-    <!-- Flash Sale!!! & info ringkas (Diskon minyak + gratis ongkir) -->
+    <!-- Flash Sale & Promo -->
     <div class="row g-3 mb-4">
         <div class="col-md-6">
             <div class="flash-sale p-3 rounded-4 d-flex align-items-center gap-3 shadow-sm">
@@ -170,15 +176,14 @@
         </div>
     </div>
 
-    <!-- Bagian PRODUK TETELARIS / Produk Unggulan -->
+    <!-- Produk Tetelaris -->
     <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
         <h3 class="fw-bold"><i class="bi bi-star-fill text-warning me-2"></i> Produk Tetelaris</h3>
         <a href="#" class="text-success fw-semibold text-decoration-none">Lihat semua <i class="bi bi-arrow-right-short"></i></a>
     </div>
 
-    <!-- Grid produk unggulan dengan kategori dan diskon grosir -->
+    <!-- Grid Produk -->
     <div class="row g-4">
-        <!-- Produk 1: Minyak Goreng (diskon 10%) -->
         <div class="col-6 col-md-4 col-lg-3">
             <div class="card h-100 shadow-sm border-0">
                 <div class="position-relative">
@@ -193,15 +198,11 @@
                         <span class="price-new">Rp28.500</span>
                         <span class="price-old">Rp31.500</span>
                     </div>
-                    <div class="mt-2">
-                        <i class="bi bi-check-circle-fill text-success me-1 small"></i><small class="text-success">Min. 10 pcs diskon 10%</small>
-                    </div>
                     <button class="btn btn-sm btn-outline-success w-100 mt-3 rounded-pill"><i class="bi bi-cart-plus"></i> Beli Grosir</button>
                 </div>
             </div>
         </div>
-
-        <!-- Produk 2: Snack / Keripik -->
+        <!-- Tambahkan produk lainnya sesuai keinginan -->
         <div class="col-6 col-md-4 col-lg-3">
             <div class="card h-100 shadow-sm border-0">
                 <div class="position-relative">
@@ -212,16 +213,11 @@
                     <h6 class="card-title fw-bold">Keripik Singkong Balado</h6>
                     <p class="small text-secondary mb-1">Snack</p>
                     <div class="price-new">Rp12.500</div>
-                    <div class="text-muted text-decoration-line-through small">Rp17.900</div>
-                    <div class="mt-2">
-                        <span class="badge bg-warning text-dark"><i class="bi bi-lightning"></i> Diskon 30%</span>
-                    </div>
+                    <div class="price-old text-muted text-decoration-line-through small">Rp17.900</div>
                     <button class="btn btn-sm btn-outline-success w-100 mt-3 rounded-pill"><i class="bi bi-cart-plus"></i> Beli Grosir</button>
                 </div>
             </div>
         </div>
-
-        <!-- Produk 3: Pakaian / Kaos Polos -->
         <div class="col-6 col-md-4 col-lg-3">
             <div class="card h-100 shadow-sm border-0">
                 <div class="position-relative">
@@ -229,17 +225,14 @@
                     <span class="position-absolute top-0 start-0 m-2 badge-grosir">Grosir 10pcs</span>
                 </div>
                 <div class="card-body">
-                    <h6 class="card-title fw-bold">Kaos Polos Cotton Combed 30s</h6>
+                    <h6 class="card-title fw-bold">Kaos Polos Cotton Combed</h6>
                     <p class="small text-secondary mb-1">Pakaian</p>
                     <div class="price-new">Rp59.000</div>
-                    <div class="price-old">Rp85.000</div>
-                    <div class="mt-2 small text-success">+ Gratis ongkir min. 200rb</div>
+                    <div class="price-old text-muted text-decoration-line-through small">Rp85.000</div>
                     <button class="btn btn-sm btn-outline-success w-100 mt-3 rounded-pill"><i class="bi bi-cart-plus"></i> Beli Grosir</button>
                 </div>
             </div>
         </div>
-
-        <!-- Produk 4: Minuman Teh Kotak -->
         <div class="col-6 col-md-4 col-lg-3">
             <div class="card h-100 shadow-sm border-0">
                 <div class="position-relative">
@@ -250,101 +243,52 @@
                     <h6 class="card-title fw-bold">Teh Pucuk 350ml (1 dus)</h6>
                     <p class="small text-secondary mb-1">Minuman</p>
                     <div class="price-new">Rp42.000</div>
-                    <div class="price-old">Rp55.000</div>
-                    <div class="mt-2"><small><i class="bi bi-cup-straw"></i> Harga grosir per dus</small></div>
-                    <button class="btn btn-sm btn-outline-success w-100 mt-3 rounded-pill"><i class="bi bi-cart-plus"></i> Beli Grosir</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Produk 5: Sabun Cuci Piring (Kebersihan) -->
-        <div class="col-6 col-md-4 col-lg-3">
-            <div class="card h-100 shadow-sm border-0">
-                <div class="position-relative">
-                    <img src="https://placehold.co/400x300/efefef/99cc99?text=Sabun+Cuci" class="card-img-top rounded-top-4" alt="kebersihan">
-                    <span class="position-absolute top-0 start-0 m-2 badge-grosir">Grosir 10pcs</span>
-                </div>
-                <div class="card-body">
-                    <h6 class="card-title fw-bold">Sabun Cuci Piring Sunlight</h6>
-                    <p class="small text-secondary mb-1">Kebersihan</p>
-                    <div class="price-new">Rp18.000</div>
-                    <div class="price-old">Rp22.000</div>
-                    <div class="mt-2"><span class="badge bg-secondary">+ Diskon tambahan 5%</span></div>
-                    <button class="btn btn-sm btn-outline-success w-100 mt-3 rounded-pill"><i class="bi bi-cart-plus"></i> Beli Grosir</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Produk 6: Beras 5kg (Kebutuhan Pokok) diskon grosir -->
-        <div class="col-6 col-md-4 col-lg-3">
-            <div class="card h-100 shadow-sm border-0">
-                <div class="position-relative">
-                    <img src="https://placehold.co/400x300/efefef/cbaa66?text=Beras+Rojolele" class="card-img-top rounded-top-4" alt="beras">
-                    <span class="position-absolute top-0 start-0 m-2 badge-grosir">Hemat 10+ pcs</span>
-                </div>
-                <div class="card-body">
-                    <h6 class="card-title fw-bold">Beras Premium 5kg</h6>
-                    <p class="small text-secondary mb-1">Kebutuhan Pokok</p>
-                    <div class="price-new">Rp64.000</div>
-                    <div class="price-old">Rp75.000</div>
-                    <div class="mt-2 text-primary small"><i class="bi bi-percent"></i> Diskon 15% min. beli 10 sak</div>
+                    <div class="price-old text-muted text-decoration-line-through small">Rp55.000</div>
                     <button class="btn btn-sm btn-outline-success w-100 mt-3 rounded-pill"><i class="bi bi-cart-plus"></i> Beli Grosir</button>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Baris tambahan: pesan bahwa semua produk memenuhi minimal 10 pcs -->
-    <div class="alert alert-success mt-5 rounded-4 d-flex align-items-center" role="alert">
-        <i class="bi bi-info-circle-fill fs-4 me-3"></i>
-        <div>
-            <strong>💡 Belanja Grosir Lebih Hemat!</strong> Setiap produk di atas mendapatkan diskon s.d 30% ketika membeli minimal 10 pcs. 
-            Tambahkan ke keranjang dan rasakan promo Flash Sale + Gratis Ongkir diatas Rp.200.000.
-        </div>
-    </div>
-
-    <!-- Footer sederhana -->
-    <footer class="mt-5 pt-3 text-center text-secondary">
-        <div class="d-flex justify-content-center gap-4 flex-wrap">
-            <span><i class="bi bi-truck"></i> Gratis Ongkir >Rp200k</span>
-            <span><i class="bi bi-shield-check"></i> Pengiriman Aman</span>
-            <span><i class="bi bi-arrow-repeat"></i> Garansi Grosir</span>
-        </div>
-        <hr class="my-3">
-        <p>&copy; 2025 Groceer - Pusat Grosir Terlengkap. Hemat sampai 30% setiap produk minimal 10pcs.</p>
-    </footer>
 </div>
 
-<!-- Bootstrap JS Bundle untuk interaksi (optional, untuk toggles dll) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<!-- efek interaktif sederhana untuk tombol kategori (hanya contoh client-side) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Menambahkan efek toggle pada kategori (tidak mempengaruhi data sesungguhnya, hanya UI)
-    const btns = document.querySelectorAll('.btn-cat');
-    btns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            btns.forEach(b => {
-                b.classList.remove('btn-cat-active');
-                b.classList.remove('active');
-                b.style.background = '';
-                b.style.color = '';
-                if(!b.classList.contains('btn-outline-success')){
-                    b.classList.add('btn-outline-secondary');
-                    b.classList.remove('btn-success');
-                }
-            });
-            this.classList.add('btn-cat-active');
-            this.classList.add('active');
-            this.style.background = '#198754';
-            this.style.color = 'white';
-            this.classList.remove('btn-outline-secondary');
-            // optional alert simpel untuk demo (tidak mengganggu)
-            console.log('Filter kategori: ' + this.innerText);
-        });
+    // Cek autentikasi saat load dashboard
+    function checkAuthAndLoadUser() {
+        const isLoggedIn = localStorage.getItem('isLoggedIn');
+        if (isLoggedIn !== 'true') {
+            window.location.href = 'login.html';
+            return;
+        }
+        
+        // Tampilkan nama user
+        const userData = localStorage.getItem('userData');
+        if (userData) {
+            const user = JSON.parse(userData);
+            const nameDisplay = document.getElementById('userNameDisplay');
+            if (nameDisplay && user.name) {
+                nameDisplay.textContent = user.name.split(' ')[0]; // Tampilkan nama depan
+            }
+        }
+    }
+    
+    // Logout function
+    function logout() {
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('userData');
+        window.location.href = 'login.html';
+    }
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        checkAuthAndLoadUser();
+        
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', logout);
+        }
     });
-    // memastikan tampilan pertama "Semua" sudah aktif
-    document.querySelector('.btn-cat.active')?.classList.add('btn-cat-active');
 </script>
-
 </body>
 </html>
+
