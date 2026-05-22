@@ -4,7 +4,7 @@ const dummyUsers = [
         id: 1,                          
         username: "reseller1",          
         phone: "08123456789",           
-        email: "reseller@example.com",  
+        email: "reseller1@example.com",  
         password: "123456",             
         name: "Reseller Handal"      
     },
@@ -94,10 +94,7 @@ function login(username, password) {
     }
 }
 
-// ============================================
 // 7. FUNGSI REGISTRASI
-// ============================================
-
 // Proses pendaftaran akun baru
 function register(userData) {
     // Validasi format email
@@ -148,10 +145,8 @@ function register(userData) {
     return { success: true, message: "Registrasi berhasil! Silakan login.", redirectToLogin: true };
 }
 
-// ============================================
-// 8. EVENT LISTENER & INITIALISASI
-// ============================================
 
+// 8. EVENT LISTENER & INITIALISASI
 // Menjalankan kode setelah seluruh HTML selesai dimuat
 document.addEventListener('DOMContentLoaded', function() {
     
