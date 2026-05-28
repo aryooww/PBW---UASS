@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Groceer - Dashboard Grosir Hemat</title>
+    <!-- Bootstrap 5 CSS + Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="stylesdashboard.css">
     <style>
         * { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #f8fafc; }
@@ -19,7 +21,8 @@
         .btn-cat { border-radius: 40px; padding: 8px 20px; font-weight: 600; white-space: nowrap; }
         .hero-grocer { background: linear-gradient(105deg, #1a3c2c 0%, #2b8c4a 100%); border-radius: 1.8rem; }
         .discount-badge { background: #ffc107; color: #2c3e2f; font-weight: 700; padding: 6px 14px; border-radius: 60px; font-size: 0.75rem; }
-        .flash-sale { background: #ffedd5; border-left: 5px solid #f97316; }
+        .flash-sale { background: #ffedd5; border-left: 5px solid #f97316; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; }
+        .flash-sale:hover { transform: scale(1.02); box-shadow: 0 8px 16px rgba(0,0,0,0.1) !important; }
         .price-old { text-decoration: line-through; font-size: 0.8rem; color: #94a3b8; }
         .price-new { font-weight: 800; font-size: 1.2rem; color: #198754; }
         .badge-grosir { background-color: #e9f5ef; color: #1e7b48; font-weight: 600; font-size: 0.7rem; border-radius: 20px; padding: 4px 10px; }
@@ -30,7 +33,14 @@
         @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         .action-buttons { display: flex; gap: 8px; margin-top: 12px; }
         .buy-now-btn { background: linear-gradient(135deg, #ffc107, #ff9800); border: none; color: #1a472a; font-weight: 600; border-radius: 40px; padding: 6px 12px; width: 100%; }
-        .buy-now-btn:hover { background: linear-gradient(135deg, #ffd966, #ffb347); }
+        .buy-now-btn :hover { background: linear-gradient(135deg, #ffd966, #ffb347); }
+        .quantity-modal-img { width: 80px; height: 80px; object-fit: cover; border-radius: 12px; }
+        .quantity-control { display: flex; align-items: center; justify-content: center; gap: 15px; margin: 20px 0; }
+        .quantity-btn { width: 40px; height: 40px; border-radius: 50%; border: none; background: #e9ecef; font-size: 20px; font-weight: bold; }
+        .quantity-btn:hover { background: #dee2e6; }
+        .quantity-number { font-size: 24px; font-weight: bold; min-width: 50px; text-align: center; }
+        /* Modal untuk Beli Sekarang */
+        .buy-now-modal-img { width: 80px; height: 80px; object-fit: cover; border-radius: 12px; }   
         @media (max-width: 768px) {
             .search-wrapper { margin: 0 10px; }
             .search-box button { padding: 6px 12px; font-size: 12px; }
@@ -41,6 +51,7 @@
 </head>
 <body>
 
+<!-- Navbar dengan user info -->
 <nav class="navbar navbar-groceer text-white px-3 px-md-4 py-3 shadow">
     <div class="container-fluid">
         <div class="d-flex align-items-center gap-2">
@@ -48,16 +59,21 @@
             <span class="fw-bold fs-4">Groceer</span>
             <span class="badge bg-warning text-dark ms-2">Grosir</span>
         </div>
+
+        <!-- Search Bar -->
         <div class="search-wrapper">
             <div class="search-box">
                 <input type="text" id="searchInput" placeholder="Cari produk grosir...">
-                <button id="searchBtn"><i class="bi bi-search"></i> Cari</button>
+                <button id="searchBtn">
+                    <i class="bi bi-search"></i> Cari
+                </button>
             </div>
         </div>  
+
         <div class="d-flex align-items-center gap-3">
             <!-- Notifikasi dengan badge -->
             <div class="nav-icon-btn" id="notifIconBtn" onclick="window.location.href='notifications.html'">
-                <i class="bi bi-bell fs-5"></i>
+                <i class="bi bi-bell fs-5"></i> 
                 <span id="notifBadge" class="notif-badge" style="display: none;">0</span>
             </div>
             <div class="nav-icon-btn" onclick="window.location.href='cart.html'">
@@ -73,7 +89,11 @@
     </div>
 </nav>
 
-<div id="toastNotif" class="toast-notif"><i class="bi bi-check-circle-fill me-2"></i><span id="toastMessage"></span></div>
+<!-- Toast Notification -->
+<div id="toastNotif" class="toast-notif">
+    <i class="bi bi-check-circle-fill me-2"></i>
+    <span id="toastMessage">Produk ditambahkan!</span>
+</div>
 
 <!-- Modal Struk untuk Beli Sekarang -->
 <div class="modal fade" id="orderSuccessModal" tabindex="-1" aria-hidden="true">
@@ -87,6 +107,65 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                 <button type="button" class="btn btn-success" onclick="window.location.href='dashboard.html'">Kembali Belanja</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Pilih Jumlah Produk untuk Keranjang -->
+<div class="modal fade" id="quantityModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title"><i class="bi bi-cart-plus"></i> Pilih Jumlah Produk</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-3">
+                    <img id="modalProductImage" class="quantity-modal-img" src="" alt="">
+                    <h5 class="mt-2" id="modalProductName"></h5>
+                    <p class="text-success fw-bold" id="modalProductPrice"></p>
+                </div>
+                <div class="quantity-control">
+                    <button class="quantity-btn" id="decreaseQty">-</button>
+                    <span class="quantity-number" id="quantityValue">1</span>
+                    <button class="quantity-btn" id="increaseQty">+</button>
+                </div>
+                <p class="text-center text-muted small">Minimal pembelian grosir: 10 pcs</p>
+                <div class="alert alert-info small" id="grosirInfo"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-success" id="confirmAddToCart">Tambahkan ke Keranjang</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Pilih Jumlah untuk Beli Sekarang -->
+<div class="modal fade" id="buyNowModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title"><i class="bi bi-lightning-charge"></i> Beli Sekarang</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-3">
+                    <img id="buyNowProductImage" class="buy-now-modal-img" src="" alt="">
+                    <h5 class="mt-2" id="buyNowProductName"></h5>
+                    <p class="text-success fw-bold" id="buyNowProductPrice"></p>
+                </div>
+                <div class="quantity-control">
+                    <button class="quantity-btn" id="buyNowDecreaseQty">-</button>
+                    <span class="quantity-number" id="buyNowQuantityValue">1</span>
+                    <button class="quantity-btn" id="buyNowIncreaseQty">+</button>
+                </div>
+                <div class="alert alert-info small" id="buyNowGrosirInfo"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-warning" id="confirmBuyNow">Lanjutkan Checkout</button>
             </div>
         </div>
     </div>
@@ -106,95 +185,200 @@
         </div>
     </div>
 
-    <!-- Banner -->
+    <!-- Banner utama -->
     <div class="hero-grocer text-white p-4 p-md-5 rounded-4 mb-4 shadow">
         <div class="row align-items-center">
-            <div class="col-md-8"><h2 class="fw-bold display-6">Belanja Grosir Lebih Hemat!</h2><p class="fs-5 mt-2">Diskon s.d 30% untuk pembelian minimal 10 pcs</p><div class="mt-3"><span class="badge bg-warning text-dark fs-6 me-2 px-3 py-2"><i class="bi bi-tags"></i> 30% OFF</span><span class="badge bg-light text-dark fs-6 px-3 py-2"><i class="bi bi-box-seam"></i> Min. 1 Lusin / 1 Kodi</span></div></div>
-            <div class="col-md-4 text-md-end mt-3 mt-md-0"><i class="bi bi-cart4 fs-1 opacity-75"></i><p class="small mt-1">Grosir sepuasnya!</p></div>
+            <div class="col-md-8">
+                <h2 class="fw-bold display-6">Belanja Grosir Lebih Hemat!</h2>
+                <p class="fs-5 mt-2 opacity-90">Diskon s.d 30% untuk pembelian minimal 10 pcs setiap produk</p>
+                <div class="mt-3">
+                    <span class="badge bg-warning text-dark fs-6 me-2 px-3 py-2"><i class="bi bi-tags"></i> 30% OFF</span>
+                    <span class="badge bg-light text-dark fs-6 px-3 py-2"><i class="bi bi-box-seam"></i> Min. 1 Lusin / 1 Kodi</span>
+                </div>
+            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                <i class="bi bi-cart4 fs-1 opacity-75"></i>
+                <p class="small mt-1">Grosir sepuasnya!</p>
+            </div>
         </div>
     </div>
 
     <!-- Flash Sale & Promo -->
     <div class="row g-3 mb-4">
-        <div class="col-md-6"><div class="flash-sale p-3 rounded-4 d-flex align-items-center gap-3 shadow-sm"><div class="bg-danger text-white rounded-circle p-3"><i class="bi bi-lightning-charge fs-3"></i></div><div><h5 class="fw-bold mb-1 text-danger">Flash Sale!!!</h5><p class="mb-0 small">Harga spesial hari ini sale! Terbatas</p><span class="badge bg-danger mt-1">Hingga habis</span></div></div></div>
-        <div class="col-md-6"><div class="bg-white p-3 rounded-4 d-flex align-items-center justify-content-between flex-wrap shadow-sm border"><div class="d-flex gap-3 align-items-center"><div><i class="bi bi-droplet fs-1 text-info"></i></div><div><h6 class="fw-bold mb-0">Diskon Minyak 10%</h6><small class="text-secondary">Min. Pembelian 10 pcs</small></div></div><div class="border-start ps-3"><i class="bi bi-truck fs-2 text-success"></i><div><span class="fw-bold">Gratis Ongkir</span><br><small>Min. Rp200.000</small></div></div></div></div>
+        <div class="col-md-6">
+            <div class="flash-sale p-3 rounded-4 d-flex align-items-center gap-3 shadow-sm" onclick="window.location.href='flashsale.html'">
+                <div class="bg-danger text-white rounded-circle p-3"><i class="bi bi-lightning-charge fs-3"></i></div>
+                <div>
+                    <h5 class="fw-bold mb-1 text-danger">Flash Sale!!!</h5>
+                    <p class="mb-0 small">Harga spesial hari ini sale! Terbatas</p>
+                    <span class="badge bg-danger mt-1">Hingga habis</span>
+                </div>
+                <div class="ms-auto">
+                    <i class="bi bi-chevron-right fs-4"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="bg-white p-3 rounded-4 d-flex align-items-center justify-content-between flex-wrap shadow-sm border">
+                <div class="d-flex gap-3 align-items-center">
+                    <div><i class="bi bi-droplet fs-1 text-info"></i></div>
+                    <div>
+                        <h6 class="fw-bold mb-0">Diskon Minyak 10%</h6>
+                        <small class="text-secondary">Min. Pembelian 10 pcs</small>
+                    </div>
+                </div>
+                <div class="border-start ps-3">
+                    <i class="bi bi-truck fs-2 text-success"></i>
+                    <div><span class="fw-bold">Gratis Ongkir</span><br><small>Min. Pembelian Rp.200.000</small></div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="d-flex justify-content-between align-items-center mt-4 mb-3"><h3 class="fw-bold"><i class="bi bi-star-fill text-warning me-2"></i> Produk Tetelaris</h3><a href="#" class="text-success fw-semibold">Lihat semua <i class="bi bi-arrow-right-short"></i></a></div>
+    <!-- Produk Tetelaris -->
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+        <h3 class="fw-bold"><i class="bi bi-star-fill text-warning me-2"></i> Produk Tetelaris</h3>
+        <a href="#" class="text-success fw-semibold text-decoration-none">Lihat semua <i class="bi bi-arrow-right-short"></i></a>
+    </div>
 
+    <!-- Grid Produk -->
     <div class="row g-4" id="productGrid">
         <!-- Produk 1 -->
-        <div class="col-6 col-md-4 col-lg-3 product-card" data-category="kebutuhan-pokok" data-name="minyak goreng bimoli minyak sayur masak" data-id="1" data-price="28500">
+        <div class="col-6 col-md-4 col-lg-3" data-category="kebutuhan-pokok" data-name="minyak goreng bimoli">
             <div class="card h-100 shadow-sm border-0">
                 <div class="position-relative">
-                    <img src="src/minyakgoreng.jpeg" class="card-img-top" style="height:180px; object-fit:cover; border-radius:1rem 1rem 0 0" onerror="this.src='https://via.placeholder.com/300x200?text=Minyak'">
+                    <img src="src/minyakgoreng.jpeg" width="100%" alt="Minyak Goreng">
                     <span class="position-absolute top-0 start-0 m-2 badge-grosir"><i class="bi bi-box"></i> 1 Lusin</span>
                     <span class="position-absolute top-0 end-0 m-2 discount-badge">-10%</span>
                 </div>
                 <div class="card-body">
                     <h6 class="card-title fw-bold">Minyak Goreng Bimoli 2L</h6>
                     <p class="small text-secondary mb-1">Kebutuhan Pokok</p>
-                    <div class="d-flex align-items-baseline gap-2"><span class="price-new">Rp28.500</span><span class="price-old">Rp31.500</span></div>
+                    <div class="d-flex align-items-baseline gap-2">
+                        <span class="price-new">Rp280.500</span>
+                        <span class="price-old">Rp315.000</span>
+                    </div>
                     <div class="action-buttons">
-                        <button class="btn btn-outline-success rounded-pill add-to-cart-icon"><i class="bi bi-cart-plus"></i></button>
-                        <button class="btn buy-now-btn rounded-pill">Beli Sekarang</button>
+                        <button class="btn btn-outline-success rounded-pill add-to-cart-btn" 
+                            data-name="Minyak Goreng Bimoli 2L" 
+                            data-price="280500" 
+                            data-image="src/minyakgoreng.jpeg"
+                            data-grosir="1 Lusin (12 pcs)">
+                            <i class="bi bi-cart-plus"></i>
+                        </button>
+                        <button class="btn buy-now-btn rounded-pill buy-now-trigger" 
+                        data-name="Minyak Goreng Bimoli 2L" 
+                        data-price="280500" 
+                        data-image="src/minyakgoreng.jpeg"
+                        data-grosir="1 Lusin (12 pcs)">
+                        <i class="bi bi-lightning-charge"></i> Beli Sekarang
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
+
         <!-- Produk 2 -->
-        <div class="col-6 col-md-4 col-lg-3 product-card" data-category="snack" data-name="chitato keripik kentang snack camilan" data-id="2" data-price="12500">
+        <div class="col-6 col-md-4 col-lg-3" data-category="snack" data-name="chitato keripik">
             <div class="card h-100 shadow-sm border-0">
                 <div class="position-relative">
-                    <img src="src/chitato.jpeg" class="card-img-top" style="height:180px; object-fit:cover" onerror="this.src='https://via.placeholder.com/300x200?text=Chitato'">
+                    <img src="src/chitato.jpeg" width="100%" alt="Chitato">
                     <span class="position-absolute top-0 start-0 m-2 badge-grosir"><i class="bi bi-box"></i> 1 Lusin</span>
                     <span class="position-absolute top-0 end-0 m-2 discount-badge">-5%</span>
                 </div>
                 <div class="card-body">
                     <h6 class="card-title fw-bold">Chitato Rasa Sapi Panggang</h6>
                     <p class="small text-secondary mb-1">Snack</p>
-                    <div class="d-flex align-items-baseline gap-2"><span class="price-new">Rp12.500</span><span class="price-old">Rp17.500</span></div>
+                    <div class="d-flex align-items-baseline gap-2">
+                        <span class="price-new">Rp110.500</span>
+                        <span class="price-old">Rp120.500</span>
+                    </div>
                     <div class="action-buttons">
-                        <button class="btn btn-outline-success rounded-pill add-to-cart-icon"><i class="bi bi-cart-plus"></i></button>
-                        <button class="btn buy-now-btn rounded-pill">Beli Sekarang</button>
+                        <button class="btn btn-outline-success rounded-pill add-to-cart-btn"
+                                data-name="Chitato Rasa Sapi Panggang" 
+                                data-price="12500" 
+                                data-image="src/chitato.jpeg"
+                                data-grosir="1 Lusin (12 pcs)">
+                                <i class="bi bi-cart-plus"></i>
+                        </button>
+                        <button class="btn buy-now-btn rounded-pill buy-now-trigger"
+                                data-name="Chitato Rasa Sapi Panggang" 
+                                data-price="110000" 
+                                data-image="src/chitato.jpeg"
+                                data-grosir="1 Lusin (12 pcs)">
+                                <i class="bi bi-lightning-charge"></i> Beli Sekarang
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
+
         <!-- Produk 3 -->
-        <div class="col-6 col-md-4 col-lg-3 product-card" data-category="pakaian" data-name="kaos polos baju pakaian atasan kemeja" data-id="3" data-price="55500">
+        <div class="col-6 col-md-4 col-lg-3" data-category="pakaian" data-name="kaos polos">
             <div class="card h-100 shadow-sm border-0">
                 <div class="position-relative">
-                    <img src="src/kaoss.jpeg" class="card-img-top" style="height:180px; object-fit:cover" onerror="this.src='https://via.placeholder.com/300x200?text=Kaos'">
+                    <img src="src/kaoss.jpeg" width="100%" alt="Kaos Polos">
                     <span class="position-absolute top-0 start-0 m-2 badge-grosir"><i class="bi bi-box"></i> 1 Kodi</span>
                     <span class="position-absolute top-0 end-0 m-2 discount-badge">-15%</span>
                 </div>
                 <div class="card-body">
                     <h6 class="card-title fw-bold">Kaos Polos Cotton Combed</h6>
                     <p class="small text-secondary mb-1">Pakaian</p>
-                    <div class="d-flex align-items-baseline gap-2"><span class="price-new">Rp55.500</span><span class="price-old">Rp85.500</span></div>
+                    <div class="d-flex align-items-baseline gap-2">
+                        <span class="price-new">Rp550.500</span>
+                        <span class="price-old">Rp650.500</span>
+                    </div>
                     <div class="action-buttons">
-                        <button class="btn btn-outline-success rounded-pill add-to-cart-icon"><i class="bi bi-cart-plus"></i></button>
-                        <button class="btn buy-now-btn rounded-pill">Beli Sekarang</button>
+                        <button class="btn btn-outline-success rounded-pill add-to-cart-btn"
+                                data-name="Kaos Polos Cotton Combed" 
+                                data-price="55500" 
+                                data-image="src/kaoss.jpeg"
+                                data-grosir="1 Kodi (20 pcs)">
+                                <i class="bi bi-cart-plus"></i>
+                        </button>
+                        <button class="btn buy-now-btn rounded-pill buy-now-trigger"
+                                data-name="Kaos Polos Cotton Combed" 
+                                data-price="550500" 
+                                data-image="src/kaoss.jpeg"
+                                data-grosir="1 Kodi (20 pcs)">
+                                <i class="bi bi-lightning-charge"></i> Beli Sekarang
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
+
         <!-- Produk 4 -->
-        <div class="col-6 col-md-4 col-lg-3 product-card" data-category="minuman" data-name="teh kotak minuman teh rasa buah" data-id="4" data-price="42000">
+        <div class="col-6 col-md-4 col-lg-3" data-category="minuman" data-name="teh kotak">
             <div class="card h-100 shadow-sm border-0">
                 <div class="position-relative">
-                    <img src="src/tehkotak.jpeg" class="card-img-top" style="height:180px; object-fit:cover" onerror="this.src='https://via.placeholder.com/300x200?text=Teh+Kotak'">
+                    <img src="src/tehkotak.jpeg" width="100%" alt="Teh Kotak">
                     <span class="position-absolute top-0 start-0 m-2 badge-grosir"><i class="bi bi-box"></i> 1 Lusin</span>
                     <span class="position-absolute top-0 end-0 m-2 discount-badge">-5%</span>
                 </div>
                 <div class="card-body">
                     <h6 class="card-title fw-bold">Teh Kotak (1 dus)</h6>
                     <p class="small text-secondary mb-1">Minuman</p>
-                    <div class="d-flex align-items-baseline gap-2"><span class="price-new">Rp42.000</span><span class="price-old">Rp55.000</span></div>
+                    <div class="d-flex align-items-baseline gap-2">
+                        <span class="price-new">Rp90.000</span>
+                        <span class="price-old">Rp110.000</span>
+                    </div>
                     <div class="action-buttons">
-                        <button class="btn btn-outline-success rounded-pill add-to-cart-icon"><i class="bi bi-cart-plus"></i></button>
-                        <button class="btn buy-now-btn rounded-pill">Beli Sekarang</button>
+                        <button class="btn btn-outline-success rounded-pill add-to-cart-btn"
+                                data-name="Teh Kotak (1 dus)" 
+                                data-price="90000" 
+                                data-image="src/tehkotak.jpeg"
+                                data-grosir="1 Dus (24 pcs)">
+                            <i class="bi bi-cart-plus"></i>
+                        </button>
+                        <button class="btn buy-now-btn rounded-pill buy-now-trigger"
+                                data-name="Teh Kotak (1 dus)" 
+                                data-price="90000" 
+                                data-image="src/tehkotak.jpeg"
+                                data-grosir="1 Dus (24 pcs)">
+                                <i class="bi bi-lightning-charge"></i> Beli Sekarang
+                        </button>
                     </div>
                 </div>
             </div>
@@ -204,133 +388,372 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Helper functions
-    function showToast(msg, ok=true) {
-        let t = document.getElementById('toastNotif');
-        document.getElementById('toastMessage').innerText = msg;
-        t.style.backgroundColor = ok ? '#198754' : '#dc3545';
-        t.style.display = 'block';
-        setTimeout(()=> t.style.display='none', 2000);
+    // ==================== KERANJANG ====================
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    // Update badge keranjang
+    function updateCartBadge() {
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        const badge = document.getElementById('cartItemCount');
+        if (badge) badge.textContent = totalItems;
+        localStorage.setItem('cart', JSON.stringify(cart));
     }
-    
-    function getCart() { return JSON.parse(localStorage.getItem('groceer_cart')) || []; }
-    function saveCart(c) { localStorage.setItem('groceer_cart', JSON.stringify(c)); updateCartBadge(); }
-    function updateCartBadge() { let total = getCart().reduce((s,i)=>s+i.quantity,0); document.getElementById('cartItemCount').innerText = total; }
-    
-    // Notifikasi dengan read status
-    function getNotifications() { return JSON.parse(localStorage.getItem('groceer_notifications')) || []; }
-    function saveNotifications(notifs) { localStorage.setItem('groceer_notifications', JSON.stringify(notifs)); updateNotifBadge(); }
-    function addNotification(msg) {
-        let notifs = getNotifications();
-        notifs.unshift({ id: Date.now(), message: msg, time: new Date().toLocaleString(), read: false });
-        if(notifs.length > 50) notifs.pop();
-        saveNotifications(notifs);
-        showToast(msg, true);
+
+    // Toast notifikasi
+    function showToast(message, isSuccess = true) {
+        const toast = document.getElementById('toastNotif');
+        const toastMessage = document.getElementById('toastMessage');
+        toastMessage.textContent = message;
+        toast.style.backgroundColor = isSuccess ? '#198754' : '#dc3545';
+        toast.style.display = 'block';
+        setTimeout(() => {
+            toast.style.display = 'none';
+        }, 2000);
     }
-    function updateNotifBadge() {
-        let notifs = getNotifications();
-        let unread = notifs.filter(n => !n.read).length;
-        let badge = document.getElementById('notifBadge');
-        if(unread > 0) {
-            badge.innerText = unread > 99 ? '99+' : unread;
-            badge.style.display = 'flex';
+
+    // ==================== MODAL QUANTITY ====================
+    let selectedProduct = null;
+    let currentQuantity = 1;
+
+    function openQuantityModal(product) {
+        selectedProduct = product;
+        currentQuantity = 1;
+        document.getElementById('modalProductName').textContent = product.name;
+        document.getElementById('modalProductPrice').textContent = `Rp${parseInt(product.price).toLocaleString()} / Lusin`;
+        document.getElementById('modalProductImage').src = product.image;
+        document.getElementById('quantityValue').textContent = currentQuantity;
+        document.getElementById('grosirInfo').innerHTML = `<i class="bi bi-info-circle"></i> ${product.grosir} — Minimal pembelian grosir 1 Lusin`;
+        
+        const modal = new bootstrap.Modal(document.getElementById('quantityModal'));
+        modal.show();
+    }
+
+    // Event quantity controls
+    document.getElementById('decreaseQty')?.addEventListener('click', () => {
+        if (currentQuantity > 1) {
+            currentQuantity--;
+            document.getElementById('quantityValue').textContent = currentQuantity;
+        }
+    });
+
+    document.getElementById('increaseQty')?.addEventListener('click', () => {
+        currentQuantity++;
+        document.getElementById('quantityValue').textContent = currentQuantity;
+    });
+
+    // Konfirmasi tambah ke keranjang
+    document.getElementById('confirmAddToCart')?.addEventListener('click', () => {
+        if (selectedProduct) {
+            const existingItem = cart.find(item => item.name === selectedProduct.name);
+            
+            if (existingItem) {
+                existingItem.quantity += currentQuantity;
+            } else {
+                cart.push({
+                    name: selectedProduct.name,
+                    price: parseInt(selectedProduct.price),
+                    quantity: currentQuantity,
+                    image: selectedProduct.image,
+                    grosir: selectedProduct.grosir
+                });
+            }
+            
+            updateCartBadge();
+            showToast(`✅ ${selectedProduct.name} (${currentQuantity} pcs) ditambahkan ke keranjang!`);
+            
+            bootstrap.Modal.getInstance(document.getElementById('quantityModal')).hide();
+        }
+    });
+
+    // Event listener untuk tombol add to cart (icon keranjang)
+    document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const product = {
+                name: this.getAttribute('data-name'),
+                price: this.getAttribute('data-price'),
+                image: this.getAttribute('data-image'),
+                grosir: this.getAttribute('data-grosir')
+            };
+            openQuantityModal(product);
+        });
+    });
+
+    // ==================== BELI SEKARANG ====================
+    // Fungsi untuk langsung checkout (tanpa modal quantity, langsung ke cart)
+    function buyNow(product) {
+        // Tambahkan produk ke keranjang dengan quantity 1
+        const existingItem = cart.find(item => item.name === product.name);
+        
+        if (existingItem) {
+            existingItem.quantity += 1;
         } else {
-            badge.style.display = 'none';
-        }
-    }
-    
-    // Cart functions
-    function addToCart(id, name, price, img, cat) {
-        let cart = getCart();
-        let ex = cart.find(i=>i.id==id);
-        if(ex) ex.quantity++;
-        else cart.push({id,name,price,image:img,category:cat,quantity:1});
-        saveCart(cart);
-        addNotification(`✅ ${name} ditambahkan ke keranjang`);
-    }
-    
-    function buyNow(card) {
-        let id = parseInt(card.dataset.id);
-        let name = card.querySelector('.card-title').innerText;
-        let price = parseInt(card.querySelector('.price-new').innerText.replace(/[^0-9]/g,''));
-        let img = card.querySelector('img')?.src || '';
-        let cat = card.dataset.category;
-        // langsung checkout tanpa keranjang
-        let total = price;
-        let struk = `<div class="border-bottom pb-2 mb-2"><h6>Struk Pembelian</h6><small>${new Date().toLocaleString()}</small></div><ul class="list-unstyled"><li><strong>${escapeHtml(name)}</strong> x 1 = Rp${total.toLocaleString()}</li></ul><hr><div class="d-flex justify-content-between fw-bold"><span>Total</span><span>Rp${total.toLocaleString()}</span></div><div class="alert alert-success mt-2"><i class="bi bi-check-circle"></i> Pesanan Anda telah diterima!</div>`;
-        document.getElementById('orderStrukContent').innerHTML = struk;
-        new bootstrap.Modal(document.getElementById('orderSuccessModal')).show();
-        addNotification(`🛍️ Pembelian langsung: ${name} (1 pcs) - Rp${total.toLocaleString()}`);
-    }
-    function escapeHtml(s) { if(!s) return ''; return s.replace(/[&<>]/g, m=> m==='&'?'&amp;': m==='<'?'&lt;':'&gt;'); }
-    
-    function setupButtons() {
-        document.querySelectorAll('.add-to-cart-icon').forEach(btn => {
-            btn.onclick = (e) => {
-                let card = e.target.closest('.product-card');
-                let id = parseInt(card.dataset.id);
-                let name = card.querySelector('.card-title').innerText;
-                let price = parseInt(card.querySelector('.price-new').innerText.replace(/[^0-9]/g,''));
-                let img = card.querySelector('img')?.src || '';
-                let cat = card.dataset.category;
-                addToCart(id, name, price, img, cat);
-            };
-        });
-        document.querySelectorAll('.buy-now-btn').forEach(btn => {
-            btn.onclick = (e) => { buyNow(e.target.closest('.product-card')); };
-        });
-    }
-    
-    // Filter & Search (sama seperti sebelumnya)
-    function setupFilters() {
-        let btns = document.querySelectorAll('[data-filter]');
-        let prods = document.querySelectorAll('.product-card');
-        btns.forEach(b=>{
-            b.onclick = ()=>{
-                btns.forEach(btn=>{ btn.classList.remove('btn-success','active'); btn.classList.add('btn-outline-secondary'); });
-                b.classList.add('btn-success','active');
-                let val = b.dataset.filter;
-                prods.forEach(p=>{ if(val==='all') p.style.display=''; else p.style.display = p.dataset.category===val ? '' : 'none'; });
-            };
-        });
-    }
-    function setupSearch() {
-        let btn = document.getElementById('searchBtn');
-        let inp = document.getElementById('searchInput');
-        let prods = document.querySelectorAll('.product-card');
-        let filterBtns = document.querySelectorAll('[data-filter]');
-        function search() {
-            let term = inp.value.toLowerCase().trim();
-            let found=0;
-            prods.forEach(p=>{
-                let nameAttr = (p.dataset.name||'').toLowerCase();
-                if(term==='' || nameAttr.includes(term)) { p.style.display=''; if(term!=='') found++; }
-                else p.style.display='none';
+            cart.push({
+                name: product.name,
+                price: parseInt(product.price),
+                quantity: 1,
+                image: product.image,
+                grosir: product.grosir
             });
-            if(term!==''){
-                filterBtns.forEach(btn=>{ if(btn.dataset.filter==='all'){ btn.classList.remove('btn-outline-secondary'); btn.classList.add('btn-success','active'); } else { btn.classList.remove('btn-success','active'); btn.classList.add('btn-outline-secondary'); } });
-                if(found===0) showToast(`"${term}" tidak ditemukan`, false);
-                else showToast(`Ditemukan ${found} produk`);
-            } else { document.querySelector('[data-filter="all"]')?.click(); }
         }
-        btn.onclick = search;
-        inp.onkeypress = e=>{ if(e.key==='Enter') search(); };
+        
+        updateCartBadge();
+        showToast(`✅ ${product.name} ditambahkan ke keranjang!`, true);
+        
+        // Tanya apakah mau langsung checkout
+        setTimeout(() => {
+            if (confirm('Produk ditambahkan ke keranjang! Apakah Anda ingin langsung checkout?')) {
+                window.location.href = 'cart.html';
+            }
+        }, 500);
     }
+
+    // Event listener untuk tombol Beli Sekarang
+    document.querySelectorAll('.buy-now-btn-product').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const product = {
+                name: this.getAttribute('data-name'),
+                price: this.getAttribute('data-price'),
+                image: this.getAttribute('data-image'),
+                grosir: this.getAttribute('data-grosir')
+            };
+            buyNow(product);
+        });
+    });
+
+    // ==================== BELI SEKARANG DENGAN MODAL QUANTITY ====================
+let buyNowProduct = null;
+let buyNowQuantity = 1;
+
+function openBuyNowModal(product) {
+    buyNowProduct = product;
+    buyNowQuantity = 1;
+    document.getElementById('buyNowProductName').textContent = product.name;
+    document.getElementById('buyNowProductPrice').textContent = `Rp${parseInt(product.price).toLocaleString()} / Lusin`;
+    document.getElementById('buyNowProductImage').src = product.image;
+    document.getElementById('buyNowQuantityValue').textContent = buyNowQuantity;
+    document.getElementById('buyNowGrosirInfo').innerHTML = `<i class="bi bi-info-circle"></i> ${product.grosir} — Minimal pembelian grosir 1 Lusin`;
     
-    function checkAuth() { 
-        if(localStorage.getItem('isLoggedIn')!=='true') window.location.href='Tampilanlogin.html'; 
-        let u=JSON.parse(localStorage.getItem('userData')); 
-        if(u) document.getElementById('userNameDisplay').innerText = u.name.split(' ')[0]; 
+    const modal = new bootstrap.Modal(document.getElementById('buyNowModal'));
+    modal.show();
+}
+
+// Event quantity untuk modal Beli Sekarang
+document.getElementById('buyNowDecreaseQty')?.addEventListener('click', () => {
+    if (buyNowQuantity > 1) {
+        buyNowQuantity--;
+        document.getElementById('buyNowQuantityValue').textContent = buyNowQuantity;
     }
-    document.getElementById('logoutBtn').onclick = ()=>{ localStorage.removeItem('isLoggedIn'); localStorage.removeItem('userData'); window.location.href='Tampilanlogin.html'; };
+});
+
+document.getElementById('buyNowIncreaseQty')?.addEventListener('click', () => {
+    buyNowQuantity++;
+    document.getElementById('buyNowQuantityValue').textContent = buyNowQuantity;
+});
+
+// Konfirmasi lanjut checkout
+document.getElementById('confirmBuyNow')?.addEventListener('click', () => {
+    if (buyNowProduct) {
+        // Simpan produk dengan jumlah yang dipilih
+        const productWithQuantity = {
+            name: buyNowProduct.name,
+            price: parseInt(buyNowProduct.price),
+            quantity: buyNowQuantity,
+            image: buyNowProduct.image,
+            grosir: buyNowProduct.grosir
+        };
+        
+        // Simpan ke localStorage untuk direct checkout
+        localStorage.setItem('directCheckoutProduct', JSON.stringify(productWithQuantity));
+        
+        // Tutup modal
+        bootstrap.Modal.getInstance(document.getElementById('buyNowModal')).hide();
+        
+        // Langsung ke halaman alamat
+        window.location.href = 'checkout-direct.html';
+    }
+});
+
+// Event listener untuk tombol Beli Sekarang
+document.querySelectorAll('.buy-now-trigger').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const product = {
+            name: this.getAttribute('data-name'),
+            price: this.getAttribute('data-price'),
+            image: this.getAttribute('data-image'),
+            grosir: this.getAttribute('data-grosir')
+        };
+        openBuyNowModal(product);
+    });
+});
+
+    // ==================== FUNGSI LAINNYA ====================
+    function checkAuthAndLoadUser() {
+        const isLoggedIn = localStorage.getItem('isLoggedIn');
+        if (isLoggedIn !== 'true') {
+            window.location.href = 'Tampilanlogin.html';
+            return;
+        }
+        
+        const userData = localStorage.getItem('userData');
+        if (userData) {
+            const user = JSON.parse(userData);
+            const nameDisplay = document.getElementById('userNameDisplay');
+            if (nameDisplay && user.name) {
+                nameDisplay.textContent = user.name.split(' ')[0];
+            }
+        }
+    }
+
+    function logout() {
+        if (confirm('Apakah Anda yakin ingin logout?')) {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('userData');
+            window.location.href = 'Tampilanlogin.html';
+        }
+    }
+
+    function setupCategoryFilter() {
+        const filterButtons = document.querySelectorAll('[data-filter]');
+        const productCards = document.querySelectorAll('#productGrid .col-6');
     
-    document.addEventListener('DOMContentLoaded', ()=>{ 
-        checkAuth(); 
-        updateCartBadge(); 
-        updateNotifBadge();
-        setupFilters(); 
-        setupSearch(); 
-        setupButtons(); 
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                filterButtons.forEach(btn => {
+                    btn.classList.remove('btn-success', 'active');
+                    btn.classList.add('btn-outline-secondary');
+                });
+                this.classList.remove('btn-outline-secondary');
+                this.classList.add('btn-success', 'active');
+    
+                const filterValue = this.getAttribute('data-filter');
+                productCards.forEach(card => {
+                    if (filterValue === 'all') {
+                        card.style.display = '';
+                    } else {
+                        const cardCategory = card.getAttribute('data-category');
+                        card.style.display = cardCategory === filterValue ? '' : 'none';
+                    }
+                });
+            });
+        });
+    }
+
+    function setupSearchFeature() {
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const filterButtons = document.querySelectorAll('[data-filter]');
+        const productCards = document.querySelectorAll('#productGrid .col-6');
+        
+        const categoryKeywords = {
+            'pakaian': ['baju', 'kaos', 'pakaian', 'kemeja', 'celana', 'jaket', 'atasan', 'bawahan', 'fashion'],
+            'snack': ['snack', 'cemilan', 'keripik', 'chitato', 'kripik', 'makanan ringan', 'biskuit'],
+            'kebutuhan-pokok': ['minyak', 'sembako', 'beras', 'gula', 'telur', 'kebutuhan pokok', 'bimoli'],
+            'minuman': ['teh', 'minuman', 'soda', 'air mineral', 'jus', 'kopi', 'kotak'],
+            'makanan': ['makanan', 'siap saji', 'instan', 'mie'],
+            'kebersihan': ['sabun', 'detergen', 'pembersih', 'kebersihan', 'shampoo']
+        };
+        
+        function searchProducts() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            let foundCount = 0;
+            let matchedCategory = null;
+            
+            if (searchTerm === '') {
+                filterButtons.forEach(btn => {
+                    if (btn.getAttribute('data-filter') === 'all') {
+                        btn.click();
+                    }
+                });
+                return;
+            }
+            
+            for (const [category, keywords] of Object.entries(categoryKeywords)) {
+                for (const keyword of keywords) {
+                    if (searchTerm.includes(keyword) || keyword.includes(searchTerm)) {
+                        matchedCategory = category;
+                        break;
+                    }
+                }
+                if (matchedCategory) break;
+            }
+            
+            productCards.forEach(card => {
+                const productName = card.querySelector('.card-title').textContent.toLowerCase();
+                const cardCategory = card.getAttribute('data-category');
+                
+                let isMatch = productName.includes(searchTerm);
+                
+                if (!isMatch && matchedCategory && cardCategory === matchedCategory) {
+                    isMatch = true;
+                }
+                
+                if (isMatch) {
+                    card.style.display = '';
+                    foundCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            if (foundCount > 0) {
+                filterButtons.forEach(btn => {
+                    if (btn.getAttribute('data-filter') === 'all') {
+                        btn.classList.remove('btn-outline-secondary');
+                        btn.classList.add('btn-success', 'active');
+                    } else {
+                        btn.classList.remove('btn-success', 'active');
+                        btn.classList.add('btn-outline-secondary');
+                    }
+                });
+            }
+            
+            if (foundCount === 0) {
+                showToast(`"${searchTerm}" tidak ditemukan`, false);
+            } else {
+                showToast(`Ditemukan ${foundCount} produk untuk "${searchTerm}"`, true);
+            }
+        }
+        
+        if (searchBtn) searchBtn.addEventListener('click', searchProducts);
+        if (searchInput) {
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') searchProducts();
+            });
+        }
+    }
+
+    function enhanceProductData() {
+        const products = document.querySelectorAll('#productGrid .col-6');
+        const productDetails = {
+            0: { name: 'minyak goreng bimoli minyak sayur masak', category: 'kebutuhan-pokok' },
+            1: { name: 'chitato keripik kentang snack camilan', category: 'snack' },
+            2: { name: 'kaos polos baju pakaian atasan kemeja', category: 'pakaian' },
+            3: { name: 'teh kotak minuman teh rasa buah', category: 'minuman' }
+        };
+        
+        products.forEach((product, index) => {
+            if (productDetails[index]) {
+                product.setAttribute('data-name', productDetails[index].name);
+                product.setAttribute('data-category', productDetails[index].category);
+            }
+        });
+    }
+
+    // ==================== INITIALIZE ====================
+    document.addEventListener('DOMContentLoaded', function() {
+        checkAuthAndLoadUser();
+        enhanceProductData();
+        setupCategoryFilter();
+        setupSearchFeature();
+        updateCartBadge();
+        
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', logout);
+        }
     });
 </script>
 </body>
