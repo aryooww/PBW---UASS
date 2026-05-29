@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Saya - Groceer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style> body { background:#f8fafc; } .navbar-groceer { background: linear-gradient(135deg, #1e7b48, #146c43); } </style>
+</head>
+<body>
+<nav class="navbar navbar-groceer text-white px-4 py-3 shadow">
+    <div class="container-fluid d-flex justify-content-between">
+        <div class="d-flex gap-2 align-items-center" onclick="window.location.href='dashboard.html'" style="cursor:pointer;"><i class="bi bi-basket3 fs-3"></i><span class="fw-bold fs-4">Groceer</span></div>
+        <div class="d-flex gap-3"><i class="bi bi-bell fs-5" style="cursor:pointer" onclick="window.location.href='notifications.html'"></i><i class="bi bi-cart3 fs-5" style="cursor:pointer" onclick="window.location.href='cart.html'"></i><i class="bi bi-box-arrow-right fs-5" style="cursor:pointer" id="logoutBtn"></i></div>
+    </div>
+</nav>
+<div class="container py-4">
+    <div class="card border-0 shadow-sm rounded-4 mx-auto" style="max-width:600px;">
+        <div class="card-body p-4">
+            <div class="text-center mb-3"><i class="bi bi-person-circle fs-1 text-success"></i><h3 class="mt-2">Profil Reseller</h3></div>
+            <div id="profileAlert" class="alert d-none"></div>
+            <div class="mb-3"><label class="form-label fw-semibold">Nama Lengkap</label><input type="text" id="profileName" class="form-control"></div>
+            <div class="mb-3"><label class="form-label fw-semibold">Email</label><input type="email" id="profileEmail" class="form-control" readonly></div>
+            <div class="mb-3"><label class="form-label fw-semibold">No. Handphone</label><input type="text" id="profilePhone" class="form-control" readonly></div>
+            <div class="mb-3"><label class="form-label fw-semibold">Username</label><input type="text" id="profileUsername" class="form-control" readonly></div>
+            <button class="btn btn-success w-100 rounded-pill" id="saveProfileBtn"><i class="bi bi-save"></i> Simpan Perubahan</button>
+        </div>
+    </div>
+</div>
+<script>
+    function loadUserData(){
+        const userRaw = localStorage.getItem('userData');
+        if(!userRaw) return null;
+        return JSON.parse(userRaw);
+    }
+    function saveUserData(updatedData){
+        localStorage.setItem('userData', JSON.stringify(updatedData));
+        const isLogged = localStorage.getItem('isLoggedIn');
+        if(isLogged === 'true') localStorage.setItem('isLoggedIn','true');
+    }
+    function displayProfile(){
+        const user = loadUserData();
+        if(user){
+            document.getElementById('profileName').value = user.name || '';
+            document.getElementById('profileEmail').value = user.email || '';
+            document.getElementById('profilePhone').value = user.phone || '';
+            document.getElementById('profileUsername').value = user.username || '';
+        }
+    }
+    document.getElementById('saveProfileBtn')?.addEventListener('click',()=>{
+        const newName = document.getElementById('profileName').value.trim();
+        if(newName === ""){ alert("Nama tidak boleh kosong"); return; }
+        const user = loadUserData();
+        if(user){
+            user.name = newName;
+            saveUserData(user);
+            const alertBox = document.getElementById('profileAlert');
+            alertBox.innerText = "Profil berhasil diperbarui!";
+            alertBox.classList.remove('d-none','alert-danger');
+            alertBox.classList.add('alert-success');
+            setTimeout(()=> alertBox.classList.add('d-none'), 2000);
+            if(document.getElementById('userNameDisplay')) document.getElementById('userNameDisplay').innerText = newName.split(' ')[0];
+        } else { alert("Sesi tidak valid, silakan login ulang"); }
+    });
+    document.getElementById('logoutBtn')?.addEventListener('click',()=>{ localStorage.removeItem('isLoggedIn'); localStorage.removeItem('userData'); window.location.href='Tampilanlogin.html'; });
+    if(localStorage.getItem('isLoggedIn') !== 'true') window.location.href = 'Tampilanlogin.html';
+    displayProfile();
+</script>
+</body>
+</html>

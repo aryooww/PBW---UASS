@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keranjang Belanja - Groceer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        * { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f8fafc; }
+        .navbar-groceer { background: linear-gradient(135deg, #1e7b48, #146c43); }
+        .cart-item-img { width: 80px; height: 80px; object-fit: cover; border-radius: 12px; }
+        .quantity-control { display: flex; align-items: center; gap: 10px; }
+        .qty-btn { width: 30px; height: 30px; border-radius: 50%; border: 1px solid #ddd; background: white; }
+        .qty-btn:hover { background: #e9ecef; }
+        .checkout-card { background: white; border-radius: 1rem; position: sticky; top: 20px; }
+        .empty-cart { text-align: center; padding: 60px 20px; }
+        .toast-notif { position: fixed; bottom: 20px; right: 20px; background: #198754; color: white; padding: 12px 24px; border-radius: 50px; z-index: 9999; display: none; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-groceer text-white px-3 py-3 shadow">
+    <div class="container">
+        <div class="d-flex align-items-center gap-2" onclick="window.location.href='dashboard.html'" style="cursor: pointer;">
+            <i class="bi bi-basket3 fs-3"></i>
+            <span class="fw-bold fs-4">Groceer</span>
+        </div>
+        <div onclick="window.location.href='dashboard.html'" style="cursor: pointer;">
+            <i class="bi bi-arrow-left fs-5"></i> Kembali Belanja
+        </div>
+    </div>
+</nav>
+
+<div class="container py-4">
+    <h3 class="fw-bold mb-4"><i class="bi bi-cart3 text-success"></i> Keranjang Belanja Saya</h3>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <div id="cartItemsContainer" class="bg-white rounded-4 p-3 shadow-sm">
+                <!-- Cart items akan diisi JavaScript -->
+            </div>
+        </div>
+        
+        <div class="col-lg-4 mt-4 mt-lg-0">
+            <div class="checkout-card p-4 shadow-sm">
+                <h5 class="fw-bold mb-3">Ringkasan Belanja</h5>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Total Item:</span>
+                    <span class="fw-bold" id="totalItems">0</span>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    <span>Total Harga:</span>
+                    <span class="fw-bold text-success fs-5" id="totalPrice">Rp0</span>
+                </div>
+                <hr>
+                <button class="btn btn-success w-100 py-2 fw-bold" id="checkoutBtn" onclick="goToCheckout()">
+                    <i class="bi bi-credit-card"></i> Checkout Sekarang
+                </button>
+                <button class="btn btn-outline-danger w-100 mt-2" onclick="clearCart()">
+                    <i class="bi bi-trash"></i> Kosongkan Keranjang
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="toastNotif" class="toast-notif">
+    <i class="bi bi-check-circle-fill me-2"></i>
+    <span id="toastMessage"></span>
+</div>
+
+<script>
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    function showToast(message, isSuccess = true) {
+        const toast = document.getElementById('toastNotif');
+        const toastMessage = document.getElementById('toastMessage');
+        toastMessage.textContent = message;
+        toast.style.backgroundColor = isSuccess ? '#198754' : '#dc3545';
+        toast.style.display = 'block';
+        setTimeout(() => { toast.style.display = 'none'; }, 2000);
+    }
+
+    function updateCartBadge() {
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        localStorage.setItem('cart', JSON.stringify(cart));
+    }
+
+    function renderCart() {
+        const container = document.getElementById('cartItemsContainer');
+        
+        if (cart.length === 0) {
+            container.innerHTML = `
+                <div class="empty-cart">
+                    <i class="bi bi-cart-x fs-1 text-muted"></i>
+                    <h5 class="mt-3">Keranjang belanja kosong</h5>
+                    <p class="text-muted">Yuk, belanja grosir sekarang!</p>
+                    <button class="btn btn-success mt-2" onclick="window.location.href='dashboard.html'">
+                        <i class="bi bi-shop"></i> Mulai Belanja
+                    </button>
+                </div>
+            `;
+            document.getElementById('totalItems').textContent = '0';
+            document.getElementById('totalPrice').textContent = 'Rp0';
+            return;
+        }
+        
+        let html = '<div class="list-group list-group-flush">';
+        let totalItems = 0;
+        let totalPrice = 0;
+        
+        cart.forEach((item, index) => {
+            const itemTotal = item.price * item.quantity;
+            totalItems += item.quantity;
+            totalPrice += itemTotal;
+            
+            html += `
+                <div class="list-group-item d-flex gap-3 align-items-center p-3 border-0 border-bottom">
+                    <img src="${item.image}" class="cart-item-img" alt="${item.name}">
+                    <div class="flex-grow-1">
+                        <h6 class="fw-bold mb-1">${item.name}</h6>
+                        <p class="small text-muted mb-1">${item.grosir || 'Grosir'}</p>
+                        <div class="d-flex align-items-center gap-3 flex-wrap">
+                            <span class="fw-bold text-success">Rp${item.price.toLocaleString()}</span>
+                            <span class="text-muted">x</span>
+                            <div class="quantity-control">
+                                <button class="qty-btn" onclick="updateQuantity(${index}, -1)">-</button>
+                                <span class="fw-bold" style="min-width: 30px; text-align: center;">${item.quantity}</span>
+                                <button class="qty-btn" onclick="updateQuantity(${index}, 1)">+</button>
+                            </div>
+                            <span class="fw-bold">= Rp${itemTotal.toLocaleString()}</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-outline-danger rounded-circle" onclick="removeItem(${index})">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            `;
+        });
+        
+        html += '</div>';
+        container.innerHTML = html;
+        
+        document.getElementById('totalItems').textContent = totalItems;
+        document.getElementById('totalPrice').textContent = `Rp${totalPrice.toLocaleString()}`;
+        
+        updateCartBadge();
+    }
+    
+    function updateQuantity(index, change) {
+        const newQuantity = cart[index].quantity + change;
+        if (newQuantity < 1) {
+            removeItem(index);
+        } else {
+            cart[index].quantity = newQuantity;
+            updateCartBadge();
+            renderCart();
+        }
+    }
+    
+    function removeItem(index) {
+        if (confirm(`Hapus ${cart[index].name} dari keranjang?`)) {
+            cart.splice(index, 1);
+            updateCartBadge();
+            renderCart();
+            showToast('Produk dihapus dari keranjang');
+        }
+    }
+    
+    function clearCart() {
+        if (confirm('Hapus semua produk dari keranjang?')) {
+            cart = [];
+            updateCartBadge();
+            renderCart();
+            showToast('Keranjang telah dikosongkan');
+        }
+    }
+    
+    // PERBAIKAN: Fungsi checkout yang benar menuju ke halaman alamat
+    function goToCheckout() {
+        if (cart.length === 0) {
+            showToast('Keranjang masih kosong!', false);
+            return;
+        }
+        
+        // Simpan data cart ke localStorage untuk diproses di halaman checkout
+        localStorage.setItem('checkoutCart', JSON.stringify(cart));
+        // Arahkan ke halaman pengisian alamat
+        window.location.href = 'checkout.html';
+    }
+    
+    document.addEventListener('DOMContentLoaded', renderCart);
+</script>
+</body>
+</html>

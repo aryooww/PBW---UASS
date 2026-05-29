@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Groceer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        * { font-family: 'Segoe UI', sans-serif; }
+        body { background-color: #f8fafc; }
+        .navbar-groceer { background: linear-gradient(135deg, #1e7b48, #146c43); }
+        .checkout-card { background: white; border-radius: 1rem; }
+        .product-preview-img { width: 80px; height: 80px; object-fit: cover; border-radius: 12px; }
+        @media print {
+            body * { visibility: hidden; }
+            .print-receipt, .print-receipt * { visibility: visible; }
+            .print-receipt { position: absolute; top: 0; left: 0; width: 100%; }
+            .no-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-groceer text-white px-3 py-3 shadow no-print">
+    <div class="container">
+        <div class="d-flex align-items-center gap-2" onclick="window.location.href='dashboard.html'" style="cursor: pointer;">
+            <i class="bi bi-arrow-left fs-5"></i>
+            <span class="fw-bold">Kembali</span>
+        </div>
+        <div><span class="fw-bold fs-5">Checkout</span></div>
+    </div>
+</nav>
+
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="checkout-card p-4 shadow-sm">
+                <h5 class="fw-bold mb-3"><i class="bi bi-geo-alt text-success"></i> Alamat Pengiriman</h5>
+                <div id="productPreview" class="d-flex gap-3 align-items-center p-3 bg-light rounded-3 mb-4"></div>
+                <form id="addressForm">
+                    <div class="mb-3">
+                        <label class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="namaLengkap" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nomor Telepon <span class="text-danger">*</span></label>
+                        <input type="tel" class="form-control" id="noTelp" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Alamat Lengkap <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="alamat" rows="3" required></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Kota <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="kota" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Kode Pos <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="kodePos" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Catatan (Opsional)</label>
+                        <textarea class="form-control" id="catatan" rows="2" placeholder="Contoh: Tolong packing rapi..."></textarea>
+                    </div>
+                </form>
+                <button class="btn btn-success w-100 py-2 fw-bold" id="generateReceiptBtn">
+                    <i class="bi bi-receipt"></i> Buat Struk Pesanan
+                </button>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="checkout-card p-4 shadow-sm">
+                <h5 class="fw-bold mb-3"><i class="bi bi-bag-check text-success"></i> Ringkasan Pesanan</h5>
+                <div id="orderSummary"></div>
+                <hr>
+                <div class="d-flex justify-content-between">
+                    <span>Total Harga:</span>
+                    <span class="fw-bold text-success fs-4" id="totalHarga">Rp0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Struk -->
+<div class="modal fade" id="receiptModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title"><i class="bi bi-receipt"></i> Struk Pembayaran</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div id="receiptContent" class="print-receipt" style="padding: 20px; font-family: monospace;"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                <button type="button" class="btn btn-primary" id="printReceiptBtn">
+                    <i class="bi bi-printer"></i> Cetak Struk
+                </button>
+                <button type="button" class="btn btn-success" id="finishOrderBtn">
+                    <i class="bi bi-check-circle"></i> Selesai
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    let product = JSON.parse(localStorage.getItem('directCheckoutProduct'));
+
+    if (!product) {
+        alert('Tidak ada produk yang dipesan!');
+        window.location.href = 'dashboard.html';
+    }
+
+    function formatRupiah(angka) {
+        return 'Rp' + angka.toLocaleString('id-ID');
+    }
+
+    function addNotification(message) {
+        let notifs = JSON.parse(localStorage.getItem('groceer_notifications')) || [];
+        notifs.unshift({
+            id: Date.now(),
+            message: message,
+            time: new Date().toLocaleString(),
+            read: false
+        });
+        if (notifs.length > 30) notifs.pop();
+        localStorage.setItem('groceer_notifications', JSON.stringify(notifs));
+    }
+
+    function generateOrderNumber() {
+        const date = new Date();
+        const tahun = date.getFullYear();
+        const bulan = String(date.getMonth() + 1).padStart(2, '0');
+        const hari = String(date.getDate()).padStart(2, '0');
+        const jam = String(date.getHours()).padStart(2, '0');
+        const menit = String(date.getMinutes()).padStart(2, '0');
+        const detik = String(date.getSeconds()).padStart(2, '0');
+        const random = Math.floor(Math.random() * 1000);
+        return `GRC/${tahun}${bulan}${hari}/${jam}${menit}${detik}/${random}`;
+    }
+
+    function formatTanggal() {
+        const date = new Date();
+        return date.toLocaleDateString('id-ID', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+
+    function displayProduct() {
+        const previewHtml = `
+            <img src="${product.image}" class="product-preview-img" alt="${product.name}" onerror="this.src='https://via.placeholder.com/80'">
+            <div class="flex-grow-1">
+                <h6 class="fw-bold mb-1">${product.name}</h6>
+                <p class="small text-muted mb-1">${product.grosir}</p>
+                <div class="d-flex gap-3">
+                    <span class="fw-bold text-success">${formatRupiah(product.price)}</span>
+                    <span>x ${product.quantity}</span>
+                </div>
+            </div>
+        `;
+        document.getElementById('productPreview').innerHTML = previewHtml;
+
+        const total = product.price * product.quantity;
+        const summaryHtml = `
+            <div class="d-flex justify-content-between mb-2">
+                <span>${product.name}</span>
+                <span>${formatRupiah(product.price)} x ${product.quantity}</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+                <span>Subtotal</span>
+                <span class="fw-bold">${formatRupiah(total)}</span>
+            </div>
+        `;
+        document.getElementById('orderSummary').innerHTML = summaryHtml;
+        document.getElementById('totalHarga').innerHTML = formatRupiah(total);
+    }
+
+    function displayReceipt(orderData) {
+        const total = orderData.items.price * orderData.items.quantity;
+        const html = `
+            <div style="font-family: 'Courier New', monospace; max-width: 350px; margin: 0 auto;">
+                <div style="text-align: center; border-bottom: 1px dashed #000; padding-bottom: 10px;">
+                    <h3 style="margin: 0; color: #1e7b48;">GROCEER</h3>
+                    <p style="margin: 2px 0; font-size: 11px;">Grosir Hemat & Terpercaya</p>
+                    <p style="margin: 2px 0; font-size: 10px;">Jl. Raya Dagang No. 123, Kota</p>
+                </div>
+                <div style="padding: 10px 0; border-bottom: 1px dashed #000;">
+                    <p style="margin: 2px 0; font-size: 11px;"><strong>No. Pesanan:</strong> ${orderData.orderNumber}</p>
+                    <p style="margin: 2px 0; font-size: 11px;"><strong>Tanggal:</strong> ${orderData.tanggal}</p>
+                    <p style="margin: 2px 0; font-size: 11px;"><strong>Pemesan:</strong> ${orderData.customer.nama}</p>
+                    <p style="margin: 2px 0; font-size: 11px;"><strong>Telepon:</strong> ${orderData.customer.telepon}</p>
+                    <p style="margin: 2px 0; font-size: 11px;"><strong>Alamat:</strong> ${orderData.customer.alamat}, ${orderData.customer.kota} - ${orderData.customer.kodePos}</p>
+                    ${orderData.customer.catatan ? `<p style="margin: 2px 0; font-size: 11px;"><strong>Catatan:</strong> ${orderData.customer.catatan}</p>` : ''}
+                </div>
+                <div style="padding: 10px 0; border-bottom: 1px dashed #000;">
+                    <table style="width: 100%; font-size: 11px;">
+                        <tr>
+                            <th style="text-align: left;">Produk</th>
+                            <th style="text-align: right;">Total</th>
+                        </tr>
+                        <tr>
+                            <td>${orderData.items.name} x ${orderData.items.quantity}</td>
+                            <td style="text-align: right;">${formatRupiah(total)}</td>
+                        </tr>
+                        <tr style="border-top: 1px dotted #000;">
+                            <td><strong>Total</strong></td>
+                            <td style="text-align: right;"><strong>${formatRupiah(total)}</strong></td>
+                        </tr>
+                    </table>
+                </div>
+                <div style="padding: 10px 0; text-align: center; font-size: 10px;">
+                    <p style="margin: 2px 0;">Tunjukkan struk ini saat membayar</p>
+                    <p style="margin: 2px 0;">Terima kasih telah berbelanja!</p>
+                    <p style="margin: 2px 0;">Struk ini sebagai bukti pemesanan</p>
+                </div>
+            </div>
+        `;
+        document.getElementById('receiptContent').innerHTML = html;
+    }
+
+    function generateReceipt() {
+        const nama = document.getElementById('namaLengkap').value.trim();
+        const telp = document.getElementById('noTelp').value.trim();
+        const alamat = document.getElementById('alamat').value.trim();
+        const kota = document.getElementById('kota').value.trim();
+        const kodePos = document.getElementById('kodePos').value.trim();
+
+        if (!nama) { alert('Harap isi Nama Lengkap!'); return; }
+        if (!telp) { alert('Harap isi Nomor Telepon!'); return; }
+        if (!alamat) { alert('Harap isi Alamat!'); return; }
+        if (!kota) { alert('Harap isi Kota!'); return; }
+        if (!kodePos) { alert('Harap isi Kode Pos!'); return; }
+
+        const catatan = document.getElementById('catatan').value;
+        const total = product.price * product.quantity;
+        const orderNumber = generateOrderNumber();
+        const tanggal = formatTanggal();
+
+        const orderData = {
+            orderNumber: orderNumber,
+            tanggal: tanggal,
+            customer: {
+                nama: nama,
+                telepon: telp,
+                alamat: alamat,
+                kota: kota,
+                kodePos: kodePos,
+                catatan: catatan
+            },
+            items: {
+                name: product.name,
+                price: product.price,
+                quantity: product.quantity,
+                image: product.image
+            },
+            totalPrice: total
+        };
+
+        let orderHistory = JSON.parse(localStorage.getItem('orderHistory')) || [];
+        orderHistory.push(orderData);
+        localStorage.setItem('orderHistory', JSON.stringify(orderHistory));
+
+        addNotification(`✅ Pesanan berhasil: ${product.name} x ${product.quantity} - Total ${formatRupiah(total)}`);
+
+        displayReceipt(orderData);
+        new bootstrap.Modal(document.getElementById('receiptModal')).show();
+    }
+
+    function finishOrder() {
+        localStorage.removeItem('directCheckoutProduct');
+        window.location.href = 'dashboard.html';
+    }
+
+    document.getElementById('generateReceiptBtn').addEventListener('click', generateReceipt);
+    document.getElementById('printReceiptBtn').addEventListener('click', function() { window.print(); });
+    document.getElementById('finishOrderBtn').addEventListener('click', finishOrder);
+
+    displayProduct();
+</script>
+</body>
+</html>
