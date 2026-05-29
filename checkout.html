@@ -7,54 +7,20 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
-<<<<<<< HEAD
         * { font-family: 'Segoe UI', sans-serif; }
-=======
-        * { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
->>>>>>> 9e804acfafd57f8246a5a939e21569fcd5c7629a
         body { background-color: #f8fafc; }
         .navbar-groceer { background: linear-gradient(135deg, #1e7b48, #146c43); }
         .checkout-card { background: white; border-radius: 1rem; }
         .order-summary-img { width: 50px; height: 50px; object-fit: cover; border-radius: 8px; }
-<<<<<<< HEAD
         @media print {
             body * { visibility: hidden; }
             .print-receipt, .print-receipt * { visibility: visible; }
             .print-receipt { position: absolute; top: 0; left: 0; width: 100%; }
             .no-print { display: none; }
-=======
-        .print-receipt { background: white; padding: 30px; max-width: 400px; margin: 0 auto; font-family: monospace; }
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-            .print-receipt, .print-receipt * {
-                visibility: visible;
-            }
-            .print-receipt {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-            }
-            .no-print {
-                display: none;
-            }
->>>>>>> 9e804acfafd57f8246a5a939e21569fcd5c7629a
         }
     </style>
 </head>
 <body>
-<<<<<<< HEAD
-<nav class="navbar navbar-groceer text-white px-3 py-3 shadow no-print">
-    <div class="container">
-        <div class="d-flex align-items-center gap-2" onclick="window.location.href='cart.html'" style="cursor: pointer;"><i class="bi bi-arrow-left fs-5"></i><span class="fw-bold">Kembali ke Keranjang</span></div>
-        <div><span class="fw-bold fs-5">Checkout</span></div>
-    </div>
-</nav>
-<div class="container py-4">
-    <div class="row">
-=======
 
 <nav class="navbar navbar-groceer text-white px-3 py-3 shadow no-print">
     <div class="container">
@@ -62,21 +28,16 @@
             <i class="bi bi-arrow-left fs-5"></i>
             <span class="fw-bold">Kembali ke Keranjang</span>
         </div>
-        <div>
-            <span class="fw-bold fs-5">Checkout</span>
-        </div>
+        <div><span class="fw-bold fs-5">Checkout</span></div>
     </div>
 </nav>
 
 <div class="container py-4">
     <div class="row">
-        <!-- Form Alamat Pengiriman -->
->>>>>>> 9e804acfafd57f8246a5a939e21569fcd5c7629a
         <div class="col-lg-7 mb-4">
             <div class="checkout-card p-4 shadow-sm">
                 <h5 class="fw-bold mb-3"><i class="bi bi-geo-alt text-success"></i> Alamat Pengiriman</h5>
                 <form id="addressForm">
-<<<<<<< HEAD
                     <div class="mb-3"><label class="form-label">Nama Penerima <span class="text-danger">*</span></label><input type="text" class="form-control" id="namaPenerima" required></div>
                     <div class="mb-3"><label class="form-label">Nomor Telepon <span class="text-danger">*</span></label><input type="tel" class="form-control" id="noTelepon" required></div>
                     <div class="mb-3"><label class="form-label">Alamat Lengkap <span class="text-danger">*</span></label><textarea class="form-control" id="alamat" rows="3" required></textarea></div>
@@ -97,116 +58,21 @@
                 <hr><div class="d-flex justify-content-between mb-2"><span>Total Item:</span><span class="fw-bold" id="summaryTotalItems">0</span></div>
                 <div class="d-flex justify-content-between mb-3"><span>Total Harga:</span><span class="fw-bold text-success fs-5" id="summaryTotalPrice">Rp0</span></div>
                 <button class="btn btn-success w-100 py-2 fw-bold" id="confirmOrderBtn"><i class="bi bi-check-circle"></i> Konfirmasi Pesanan</button>
-=======
-                    <div class="mb-3">
-                        <label class="form-label">Nama Penerima <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="namaPenerima" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Nomor Telepon <span class="text-danger">*</span></label>
-                        <input type="tel" class="form-control" id="noTelepon" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Alamat Lengkap <span class="text-danger">*</span></label>
-                        <textarea class="form-control" id="alamat" rows="3" placeholder="Jl. Contoh No. 123, RT/RW, Kelurahan, Kecamatan, Kota" required></textarea>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Kota <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="kota" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Kode Pos <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="kodePos" required>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Catatan (Opsional)</label>
-                        <textarea class="form-control" id="catatan" rows="2" placeholder="Contoh: Tolong packing rapi..."></textarea>
-                    </div>
-                </form>
-            </div>
-            
-            <!-- Metode Pengambilan -->
-            <div class="checkout-card p-4 shadow-sm mt-3">
-                <h5 class="fw-bold mb-3"><i class="bi bi-truck text-success"></i> Metode Pengambilan</h5>
-                <div class="form-check mb-2">
-                    <input class="form-check-input" type="radio" name="metodeAmbil" id="ambilSendiri" value="ambil_sendiri" checked>
-                    <label class="form-check-label" for="ambilSendiri">
-                        <i class="bi bi-building"></i> Ambil Sendiri di Toko
-                        <small class="d-block text-muted">Jl. Raya Dagang No. 123, Kota</small>
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="metodeAmbil" id="diantar" value="diantar">
-                    <label class="form-check-label" for="diantar">
-                        <i class="bi bi-truck"></i> Diantar ke Alamat (Gratis Ongkir)
-                    </label>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Ringkasan Pesanan -->
-        <div class="col-lg-5">
-            <div class="checkout-card p-4 shadow-sm">
-                <h5 class="fw-bold mb-3"><i class="bi bi-receipt text-success"></i> Ringkasan Pesanan</h5>
-                <div id="orderSummary" class="mb-3">
-                    <!-- Akan diisi JavaScript -->
-                </div>
-                <hr>
-                <div class="d-flex justify-content-between mb-2">
-                    <span>Total Item:</span>
-                    <span class="fw-bold" id="summaryTotalItems">0</span>
-                </div>
-                <div class="d-flex justify-content-between mb-3">
-                    <span>Total Harga:</span>
-                    <span class="fw-bold text-success fs-5" id="summaryTotalPrice">Rp0</span>
-                </div>
-                <button class="btn btn-success w-100 py-2 fw-bold" onclick="processOrder()">
-                    <i class="bi bi-check-circle"></i> Konfirmasi Pesanan
-                </button>
->>>>>>> 9e804acfafd57f8246a5a939e21569fcd5c7629a
             </div>
         </div>
     </div>
 </div>
 
-<<<<<<< HEAD
 <div class="modal fade" id="receiptModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content rounded-4">
             <div class="modal-header bg-success text-white"><h5 class="modal-title"><i class="bi bi-receipt"></i> Struk Pembayaran</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
             <div class="modal-body p-0"><div id="receiptContent" class="print-receipt"></div></div>
             <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button><button type="button" class="btn btn-primary" id="printReceiptBtn"><i class="bi bi-printer"></i> Cetak Struk</button><button type="button" class="btn btn-success" id="finishOrderBtn"><i class="bi bi-check-circle"></i> Selesai</button></div>
-=======
-<!-- Modal Struk Pembayaran -->
-<div class="modal fade" id="receiptModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content rounded-4">
-            <div class="modal-header bg-success text-white">
-                <h5 class="modal-title"><i class="bi bi-receipt"></i> Struk Pembayaran</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body p-0">
-                <div id="receiptContent" class="print-receipt">
-                    <!-- Struk akan diisi JavaScript -->
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                <button type="button" class="btn btn-primary" onclick="printReceipt()">
-                    <i class="bi bi-printer"></i> Cetak Struk
-                </button>
-                <button type="button" class="btn btn-success" onclick="finishOrder()">
-                    <i class="bi bi-check-circle"></i> Selesai
-                </button>
-            </div>
->>>>>>> 9e804acfafd57f8246a5a939e21569fcd5c7629a
         </div>
     </div>
 </div>
 
-<<<<<<< HEAD
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     let cart = JSON.parse(localStorage.getItem('checkoutCart')) || [];
@@ -218,262 +84,67 @@
 
     function renderOrderSummary() { let totalItems=0, totalPrice=0, html='<div class="list-group list-group-flush">'; cart.forEach(item => { let itemTotal = item.price * item.quantity; totalItems += item.quantity; totalPrice += itemTotal; html += `<div class="list-group-item d-flex gap-2 p-2 border-0 border-bottom"><img src="${item.image}" class="order-summary-img"><div class="flex-grow-1"><h6 class="fw-bold mb-0 small">${item.name}</h6><div class="d-flex justify-content-between"><span class="small">${item.quantity} x Rp${item.price.toLocaleString()}</span><span class="fw-bold small">Rp${itemTotal.toLocaleString()}</span></div></div></div>`; }); html += '</div>'; document.getElementById('orderSummary').innerHTML = html; document.getElementById('summaryTotalItems').innerText = totalItems; document.getElementById('summaryTotalPrice').innerText = 'Rp'+totalPrice.toLocaleString(); }
 
-    function displayReceipt(order) { let itemsHtml = ''; order.items.forEach(item => { itemsHtml += `<tr><td>${item.name} x ${item.quantity}</td><td style="text-align:right;">Rp${(item.price*item.quantity).toLocaleString()}</td></tr>`; }); let metodeText = order.metodeAmbil, alamatText = metodeText==='Ambil Sendiri di Toko' ? 'Ambil Sendiri di Toko\nJl. Raya Dagang No. 123, Kota' : `${order.customer.alamat}\n${order.customer.kota}, ${order.customer.kodePos}`; let html = `<div style="font-family: monospace; padding:20px; max-width:350px; margin:0 auto;"><div style="text-align:center; border-bottom:1px dashed #000;"><h3 style="color:#1e7b48;">GROCEER</h3><p>Grosir Hemat</p></div><div><p><strong>No. Pesanan:</strong> ${order.orderNumber}</p><p><strong>Tanggal:</strong> ${order.tanggal}</p><p><strong>Pemesan:</strong> ${order.customer.nama}</p><p><strong>Telepon:</strong> ${order.customer.telepon}</p><p><strong>Alamat:</strong><br>${alamatText.replace(/\n/g,'<br>')}</p>${order.customer.catatan ? `<p><strong>Catatan:</strong> ${order.customer.catatan}</p>` : ''}<p><strong>Metode:</strong> ${order.metodeAmbil}</p></div><div><table style="width:100%"><thead><tr><th>Produk</th><th>Total</th></tr></thead><tbody>${itemsHtml}</tbody></table></div><div style="border-top:1px dashed #000; margin-top:10px; padding-top:10px;"><div>Total Item: ${order.totalItems} pcs</div><div><strong>Total: Rp${order.totalPrice.toLocaleString()}</strong></div></div><div style="text-align:center; margin-top:20px;"><p>✅ Bayar di toko tunai</p><p>Terima kasih!</p></div></div>`; document.getElementById('receiptContent').innerHTML = html; }
+    function displayReceipt(order) { 
+        let itemsHtml = ''; 
+        order.items.forEach(item => { itemsHtml += `<tr><td style="padding:4px 0;">${item.name} x ${item.quantity}</td><td style="text-align:right;">Rp${(item.price*item.quantity).toLocaleString()}</td></tr>`; }); 
+        let metodeText = order.metodeAmbil;
+        let alamatText = '';
+        if(metodeText === 'Ambil Sendiri di Toko') {
+            alamatText = 'Ambil Sendiri di Toko\nJl. Raya Dagang No. 123, Kota';
+        } else {
+            alamatText = `${order.customer.alamat}, ${order.customer.kota} - ${order.customer.kodePos}`;
+        }
+        let html = `<div style="font-family: monospace; padding:20px; max-width:400px; margin:0 auto;">
+            <div style="text-align:center; border-bottom:1px dashed #000; padding-bottom:10px;">
+                <h3 style="margin:0; color:#1e7b48;">GROCEER</h3>
+                <p style="margin:2px 0; font-size:11px;">Grosir Hemat & Terpercaya</p>
+                <p style="margin:0; font-size:10px;">Jl. Raya Dagang No. 123, Kota</p>
+            </div>
+            <div style="padding:10px 0; border-bottom:1px dashed #000;">
+                <p style="margin:4px 0; font-size:12px;"><strong>No. Pesanan:</strong> ${order.orderNumber}</p>
+                <p style="margin:4px 0; font-size:12px;"><strong>Tanggal:</strong> ${order.tanggal}</p>
+                <p style="margin:4px 0; font-size:12px;"><strong>Pemesan:</strong> ${order.customer.nama}</p>
+                <p style="margin:4px 0; font-size:12px;"><strong>Telepon:</strong> ${order.customer.telepon}</p>
+                <p style="margin:4px 0; font-size:12px;"><strong>Alamat:</strong><br>${alamatText.replace(/\n/g,'<br>')}</p>
+                ${order.customer.catatan ? `<p style="margin:4px 0; font-size:12px;"><strong>Catatan:</strong> ${order.customer.catatan}</p>` : ''}
+                <p style="margin:4px 0; font-size:12px;"><strong>Metode:</strong> ${order.metodeAmbil}</p>
+            </div>
+            <div style="padding:10px 0; border-bottom:1px dashed #000;">
+                <table style="width:100%; font-size:12px;">${itemsHtml}</table>
+            </div>
+            <div style="padding:10px 0;">
+                <div><strong>Total Item:</strong> ${order.totalItems} pcs</div>
+                <div style="margin-top:5px;"><strong>Total Harga:</strong> Rp${order.totalPrice.toLocaleString()}</div>
+            </div>
+            <div style="text-align:center; margin-top:20px; font-size:11px;">
+                <p>Bayar di toko tunai</p>
+                <p>Terima kasih telah berbelanja!</p>
+                <p>*Struk ini sebagai bukti pemesanan*</p>
+            </div>
+        </div>`;
+        document.getElementById('receiptContent').innerHTML = html; 
+    }
 
     function finishOrder() { localStorage.removeItem('cart'); localStorage.removeItem('checkoutCart'); window.location.href = 'dashboard.html'; }
 
-    document.getElementById('confirmOrderBtn').onclick = () => { let nama = document.getElementById('namaPenerima').value.trim(); if(!nama){ alert('Nama penerima harus diisi'); return; } let telp = document.getElementById('noTelepon').value.trim(); if(!telp){ alert('Nomor telepon harus diisi'); return; } let alamat = document.getElementById('alamat').value.trim(); if(!alamat){ alert('Alamat harus diisi'); return; } let kota = document.getElementById('kota').value.trim(); if(!kota){ alert('Kota harus diisi'); return; } let kodePos = document.getElementById('kodePos').value.trim(); if(!kodePos){ alert('Kode Pos harus diisi'); return; } let metode = document.querySelector('input[name="metodeAmbil"]:checked').value; let catatan = document.getElementById('catatan').value; let totalItems = cart.reduce((s,i)=>s+i.quantity,0); let totalPrice = cart.reduce((s,i)=>s+(i.price*i.quantity),0); let orderData = { orderNumber: generateOrderNumber(), tanggal: formatTanggal(), customer: { nama, telepon: telp, alamat, kota, kodePos, catatan }, metodeAmbil: metode === 'ambil_sendiri' ? 'Ambil Sendiri di Toko' : 'Diantar ke Alamat', items: [...cart], totalItems, totalPrice, status: 'Menunggu Pembayaran' }; let orderHistory = JSON.parse(localStorage.getItem('orderHistory')) || []; orderHistory.push(orderData); localStorage.setItem('orderHistory', JSON.stringify(orderHistory)); addNotification(`🛍️ Pesanan berhasil! No. ${orderData.orderNumber} - Total Rp${totalPrice.toLocaleString()}`); displayReceipt(orderData); new bootstrap.Modal(document.getElementById('receiptModal')).show(); };
+    document.getElementById('confirmOrderBtn').onclick = () => { 
+        let nama = document.getElementById('namaPenerima').value.trim(); if(!nama){ alert('Nama penerima harus diisi'); return; } 
+        let telp = document.getElementById('noTelepon').value.trim(); if(!telp){ alert('Nomor telepon harus diisi'); return; } 
+        let alamat = document.getElementById('alamat').value.trim(); if(!alamat){ alert('Alamat harus diisi'); return; } 
+        let kota = document.getElementById('kota').value.trim(); if(!kota){ alert('Kota harus diisi'); return; } 
+        let kodePos = document.getElementById('kodePos').value.trim(); if(!kodePos){ alert('Kode Pos harus diisi'); return; } 
+        let metode = document.querySelector('input[name="metodeAmbil"]:checked').value; 
+        let catatan = document.getElementById('catatan').value; 
+        let totalItems = cart.reduce((s,i)=>s+i.quantity,0); 
+        let totalPrice = cart.reduce((s,i)=>s+(i.price*i.quantity),0); 
+        let orderData = { orderNumber: generateOrderNumber(), tanggal: formatTanggal(), customer: { nama, telepon: telp, alamat, kota, kodePos, catatan }, metodeAmbil: metode === 'ambil_sendiri' ? 'Ambil Sendiri di Toko' : 'Diantar ke Alamat', items: [...cart], totalItems, totalPrice }; 
+        let orderHistory = JSON.parse(localStorage.getItem('orderHistory')) || []; orderHistory.push(orderData); localStorage.setItem('orderHistory', JSON.stringify(orderHistory)); 
+        addNotification(`Pesanan berhasil! No. ${orderData.orderNumber} - Total Rp${totalPrice.toLocaleString()}`); 
+        displayReceipt(orderData); 
+        new bootstrap.Modal(document.getElementById('receiptModal')).show(); 
+    };
     document.getElementById('printReceiptBtn').onclick = () => { window.print(); };
     document.getElementById('finishOrderBtn').onclick = finishOrder;
-=======
-<script>
-    let cart = JSON.parse(localStorage.getItem('checkoutCart')) || [];
-    let orderNumber = '';
-
-    // Jika cart kosong, kembali ke keranjang
-    if (cart.length === 0) {
-        alert('Keranjang belanja kosong! Silakan belanja terlebih dahulu.');
-        window.location.href = 'cart.html';
-    }
-
-    // Generate nomor pesanan
-    function generateOrderNumber() {
-        const date = new Date();
-        const tahun = date.getFullYear();
-        const bulan = String(date.getMonth() + 1).padStart(2, '0');
-        const hari = String(date.getDate()).padStart(2, '0');
-        const jam = String(date.getHours()).padStart(2, '0');
-        const menit = String(date.getMinutes()).padStart(2, '0');
-        const detik = String(date.getSeconds()).padStart(2, '0');
-        const random = Math.floor(Math.random() * 1000);
-        return `GRC/${tahun}${bulan}${hari}/${jam}${menit}${detik}/${random}`;
-    }
-
-    // Format tanggal
-    function formatTanggal() {
-        const date = new Date();
-        return date.toLocaleDateString('id-ID', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    }
-
-    // Tampilkan ringkasan pesanan
-    function renderOrderSummary() {
-        const container = document.getElementById('orderSummary');
-        let totalItems = 0;
-        let totalPrice = 0;
-        
-        let html = '<div class="list-group list-group-flush">';
-        cart.forEach(item => {
-            const itemTotal = item.price * item.quantity;
-            totalItems += item.quantity;
-            totalPrice += itemTotal;
-            
-            html += `
-                <div class="list-group-item d-flex gap-2 p-2 border-0 border-bottom">
-                    <img src="${item.image}" class="order-summary-img" alt="${item.name}" onerror="this.src='https://via.placeholder.com/50'">
-                    <div class="flex-grow-1">
-                        <h6 class="fw-bold mb-0 small">${item.name}</h6>
-                        <div class="d-flex justify-content-between">
-                            <span class="small">${item.quantity} x Rp${item.price.toLocaleString()}</span>
-                            <span class="fw-bold small">Rp${itemTotal.toLocaleString()}</span>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
-        html += '</div>';
-        container.innerHTML = html;
-        
-        document.getElementById('summaryTotalItems').textContent = totalItems;
-        document.getElementById('summaryTotalPrice').textContent = `Rp${totalPrice.toLocaleString()}`;
-    }
-
-    // Proses pesanan dan tampilkan struk
-    function processOrder() {
-        // Validasi form alamat
-        const namaPenerima = document.getElementById('namaPenerima').value.trim();
-        const noTelepon = document.getElementById('noTelepon').value.trim();
-        const alamat = document.getElementById('alamat').value.trim();
-        const kota = document.getElementById('kota').value.trim();
-        const kodePos = document.getElementById('kodePos').value.trim();
-        
-        if (!namaPenerima) {
-            alert('Harap isi Nama Penerima!');
-            document.getElementById('namaPenerima').focus();
-            return;
-        }
-        if (!noTelepon) {
-            alert('Harap isi Nomor Telepon!');
-            document.getElementById('noTelepon').focus();
-            return;
-        }
-        if (!alamat) {
-            alert('Harap isi Alamat Lengkap!');
-            document.getElementById('alamat').focus();
-            return;
-        }
-        if (!kota) {
-            alert('Harap isi Kota!');
-            document.getElementById('kota').focus();
-            return;
-        }
-        if (!kodePos) {
-            alert('Harap isi Kode Pos!');
-            document.getElementById('kodePos').focus();
-            return;
-        }
-        
-        const metodeAmbil = document.querySelector('input[name="metodeAmbil"]:checked').value;
-        const catatan = document.getElementById('catatan').value;
-        
-        // Generate nomor pesanan
-        orderNumber = generateOrderNumber();
-        const tanggal = formatTanggal();
-        
-        // Hitung total
-        let totalItems = 0;
-        let totalPrice = 0;
-        cart.forEach(item => {
-            totalItems += item.quantity;
-            totalPrice += item.price * item.quantity;
-        });
-        
-        // Simpan pesanan ke localStorage untuk riwayat
-        const orderData = {
-            orderNumber: orderNumber,
-            tanggal: tanggal,
-            customer: {
-                nama: namaPenerima,
-                telepon: noTelepon,
-                alamat: alamat,
-                kota: kota,
-                kodePos: kodePos,
-                catatan: catatan
-            },
-            metodeAmbil: metodeAmbil === 'ambil_sendiri' ? 'Ambil Sendiri di Toko' : 'Diantar ke Alamat',
-            items: [...cart],
-            totalItems: totalItems,
-            totalPrice: totalPrice,
-            status: 'Menunggu Pembayaran'
-        };
-        
-        // Simpan ke riwayat pesanan
-        let orderHistory = JSON.parse(localStorage.getItem('orderHistory')) || [];
-        orderHistory.push(orderData);
-        localStorage.setItem('orderHistory', JSON.stringify(orderHistory));
-        
-        // Tampilkan struk
-        displayReceipt(orderData);
-        
-        // Tampilkan modal struk
-        const modal = new bootstrap.Modal(document.getElementById('receiptModal'));
-        modal.show();
-    }
-    
-    // Tampilkan struk pembayaran
-    function displayReceipt(order) {
-        const metodeText = order.metodeAmbil;
-        const alamatText = metodeText === 'Ambil Sendiri di Toko' 
-            ? 'Ambil Sendiri di Toko\nJl. Raya Dagang No. 123, Kota' 
-            : `${order.customer.alamat}\n${order.customer.kota}, ${order.customer.kodePos}`;
-        
-        let itemsHtml = '';
-        order.items.forEach(item => {
-            const itemTotal = item.price * item.quantity;
-            itemsHtml += `
-                <tr>
-                    <td style="padding: 4px 0;">${item.name} x ${item.quantity}</td>
-                    <td style="text-align: right;">Rp${itemTotal.toLocaleString()}</td>
-                </tr>
-            `;
-        });
-        
-        const receiptHtml = `
-            <div style="font-family: 'Courier New', monospace; padding: 20px; max-width: 350px; margin: 0 auto;">
-                <div style="text-align: center; border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 10px;">
-                    <h3 style="margin: 0; color: #1e7b48;">GROCEER</h3>
-                    <p style="margin: 5px 0; font-size: 12px;">Grosir Hemat & Terpercaya</p>
-                    <p style="margin: 0; font-size: 10px;">Jl. Raya Dagang No. 123, Kota</p>
-                    <p style="margin: 0; font-size: 10px;">Telp: 0812-3456-7890</p>
-                </div>
-                
-                <div style="border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 10px;">
-                    <p style="margin: 2px 0; font-size: 11px;"><strong>No. Pesanan:</strong> ${order.orderNumber}</p>
-                    <p style="margin: 2px 0; font-size: 11px;"><strong>Tanggal:</strong> ${order.tanggal}</p>
-                    <p style="margin: 2px 0; font-size: 11px;"><strong>Pemesan:</strong> ${order.customer.nama}</p>
-                </div>
-                
-                <div style="border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 10px;">
-                    <p style="margin: 2px 0; font-size: 11px;"><strong>Metode:</strong> ${order.metodeAmbil}</p>
-                    <p style="margin: 2px 0; font-size: 11px;"><strong>Alamat:</strong><br>${alamatText.replace(/\n/g, '<br>')}</p>
-                    ${order.customer.catatan ? `<p style="margin: 2px 0; font-size: 11px;"><strong>Catatan:</strong> ${order.customer.catatan}</p>` : ''}
-                </div>
-                
-                <div style="border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 10px;">
-                    <table style="width: 100%; font-size: 11px;">
-                        <thead>
-                            <tr style="border-bottom: 1px dotted #000;">
-                                <th style="text-align: left;">Produk</th>
-                                <th style="text-align: right;">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${itemsHtml}
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div style="border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 10px;">
-                    <div style="display: flex; justify-content: space-between; font-size: 11px;">
-                        <span>Total Item:</span>
-                        <span><strong>${order.totalItems} pcs</strong></span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; font-size: 14px; margin-top: 5px;">
-                        <span><strong>TOTAL HARGA:</strong></span>
-                        <span><strong>Rp${order.totalPrice.toLocaleString()}</strong></span>
-                    </div>
-                </div>
-                
-                <div style="text-align: center; font-size: 10px; padding-top: 10px;">
-                    <p style="margin: 2px 0;"><strong>📋 INSTRUKSI PEMBAYARAN OFFLINE</strong></p>
-                    <p style="margin: 2px 0;">✅ Silakan lakukan pembayaran tunai di toko</p>
-                    <p style="margin: 2px 0;">✅ Tunjukkan struk ini saat membayar</p>
-                    <p style="margin: 2px 0;">✅ Pembayaran hanya dapat dilakukan di toko</p>
-                    <p style="margin: 2px 0;">================================</p>
-                    <p style="margin: 2px 0;">Terima kasih telah berbelanja!</p>
-                    <p style="margin: 2px 0;">*Struk ini sebagai bukti pemesanan*</p>
-                </div>
-            </div>
-        `;
-        
-        document.getElementById('receiptContent').innerHTML = receiptHtml;
-    }
-    
-    // Cetak struk
-    function printReceipt() {
-        window.print();
-    }
-    
-    // Selesai - kosongkan keranjang dan kembali ke dashboard
-    function finishOrder() {
-        // Kosongkan keranjang
-        localStorage.removeItem('cart');
-        localStorage.removeItem('checkoutCart');
-        
-        // Tutup modal
-        bootstrap.Modal.getInstance(document.getElementById('receiptModal')).hide();
-        
-        // Arahkan ke dashboard
-        window.location.href = 'dashboard.html';
-    }
-    
->>>>>>> 9e804acfafd57f8246a5a939e21569fcd5c7629a
     renderOrderSummary();
 </script>
 </body>
